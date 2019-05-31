@@ -37,8 +37,6 @@ REPL syntax to paste into `ghci` (run `stack repl` under `gen`).
 A complete example that lists groups:
 
 ```haskell
---import Network.HTTP.Client
-
 import Data.Monoid
 import Network.HTTP.Client.TLS
 import Okta
