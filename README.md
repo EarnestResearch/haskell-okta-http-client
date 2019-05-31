@@ -1,5 +1,6 @@
-# OpenAPI Auto-Generated [http-client](https://www.stackage.org/lts-10.0/package/http-client-0.5.7.1) Bindings to `Okta API`
+## OpenAPI Auto-Generated Bindings to `Okta API`
 
+Okta [API Reference](https://developer.okta.com/reference/).
 
 Generated client code is in [gen](gen/README.md).
 
