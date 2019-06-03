@@ -20,21 +20,22 @@ with TLS or requests will fail.
 Also note that API token you get from Okta **MUST BE PREFIXED** with `SSWS ` when
 setting up auth method with `AuthApiKeyApiToken`.
 
+### Stack config
+
+Please add this to your `stack.yaml` to include in your project:
+
+```yaml
+extra-deps:
+- katip-0.8.2.0
+- git: ssh://git@github.com/EarnestResearch/haskell-okta-http-client
+  commit: "20d23c24cec1f0a12954b9b8311ffa5300c2ae07"
+  subdirs:
+  - gen
+```
+
 ### Example
 
-Note you can use
-
-```
-:{
-multi
-line
-code
-:}
-```
-
-REPL syntax to paste into `ghci` (run `stack repl` under `gen`).
-
-A complete example that lists groups:
+A complete GHCI example that lists groups:
 
 ```haskell
 import Data.Monoid
@@ -48,7 +49,20 @@ let myApiToken = "APITOKEN"
 mgr <- newTlsManager
 config0 <- withStderrLogging =<< newConfig 
 
-let config = config0 { configHost = myOktaHost } `addAuthMethod` (AuthApiKeyApiToken ("SSWS " <> myApiToken))
+let config =
+      config0 { configHost = myOktaHost }
+        `addAuthMethod` AuthApiKeyApiToken ("SSWS " <> myApiToken)
 
 lgrRes <- dispatchMime mgr config listGroups
 ```
+
+Note you can use
+
+```
+:{
+multi line
+code
+:}
+```
+
+REPL syntax to paste into `ghci` (run `stack repl` under `gen`).
