@@ -2429,7 +2429,7 @@ userPasswordChangedL f User{..} = (\userPasswordChanged -> User { userPasswordCh
 {-# INLINE userPasswordChangedL #-}
 
 -- | 'userProfile' Lens
-userProfileL :: Lens_' User (Maybe UserProfile)
+userProfileL :: Lens_' (UserP p) (Maybe p)
 userProfileL f User{..} = (\userProfile -> User { userProfile, ..} ) <$> f userProfile
 {-# INLINE userProfileL #-}
 

@@ -4116,9 +4116,16 @@ mkU2fFactor =
   { u2fFactorProfile = Nothing
   }
 
+
+-- | A quick hack to expose custom profile attributes by default
+type User = UserP A.Object
+
+-- | Access to typed original auto-generated UserProfile
+type User' = UserP UserProfile
+
 -- ** User
 -- | User
-data User = User
+data UserP p = User
   { userEmbedded :: !(Maybe (Map.Map String A.Value)) -- ^ "_embedded"
   , userLinks :: !(Maybe (Map.Map String A.Value)) -- ^ "_links"
   , userActivated :: !(Maybe DateTime) -- ^ "activated"
@@ -4128,14 +4135,14 @@ data User = User
   , userLastLogin :: !(Maybe DateTime) -- ^ "lastLogin"
   , userLastUpdated :: !(Maybe DateTime) -- ^ "lastUpdated"
   , userPasswordChanged :: !(Maybe DateTime) -- ^ "passwordChanged"
-  , userProfile :: !(Maybe UserProfile) -- ^ "profile"
+  , userProfile :: !(Maybe p) -- ^ "profile"
   , userStatus :: !(Maybe UserStatus) -- ^ "status"
   , userStatusChanged :: !(Maybe DateTime) -- ^ "statusChanged"
   , userTransitioningToStatus :: !(Maybe UserStatus) -- ^ "transitioningToStatus"
   } deriving (P.Show, P.Eq, P.Typeable)
 
 -- | FromJSON User
-instance A.FromJSON User where
+instance A.FromJSON p => A.FromJSON (UserP p) where
   parseJSON = A.withObject "User" $ \o ->
     User
       <$> (o .:? "_embedded")
@@ -4153,7 +4160,7 @@ instance A.FromJSON User where
       <*> (o .:? "transitioningToStatus")
 
 -- | ToJSON User
-instance A.ToJSON User where
+instance A.ToJSON p => A.ToJSON (UserP p) where
   toJSON User {..} =
    _omitNulls
       [ "_embedded" .= userEmbedded
