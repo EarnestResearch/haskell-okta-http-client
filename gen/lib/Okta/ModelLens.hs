@@ -2428,6 +2428,11 @@ userPasswordChangedL :: Lens_' User (Maybe DateTime)
 userPasswordChangedL f User{..} = (\userPasswordChanged -> User { userPasswordChanged, ..} ) <$> f userPasswordChanged
 {-# INLINE userPasswordChangedL #-}
 
+-- | 'userGroupIds' Lens
+userGroupIdsL :: Lens_' User (Maybe [Text])
+userGroupIdsL f User{..} = (\userGroupIds -> User { userGroupIds, ..} ) <$> f userGroupIds
+{-# INLINE userGroupIdsL #-}
+
 -- | 'userProfile' Lens
 userProfileL :: Lens_' (UserP p) (Maybe p)
 userProfileL f User{..} = (\userProfile -> User { userProfile, ..} ) <$> f userProfile

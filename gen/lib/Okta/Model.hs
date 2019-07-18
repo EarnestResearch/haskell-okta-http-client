@@ -4131,6 +4131,7 @@ data UserP p = User
   , userActivated :: !(Maybe DateTime) -- ^ "activated"
   , userCreated :: !(Maybe DateTime) -- ^ "created"
   , userCredentials :: !(Maybe UserCredentials) -- ^ "credentials"
+  , userGroupIds :: !(Maybe [Text]) -- ^ "groupIds"
   , userId :: !(Maybe Text) -- ^ "id"
   , userLastLogin :: !(Maybe DateTime) -- ^ "lastLogin"
   , userLastUpdated :: !(Maybe DateTime) -- ^ "lastUpdated"
@@ -4150,6 +4151,7 @@ instance A.FromJSON p => A.FromJSON (UserP p) where
       <*> (o .:? "activated")
       <*> (o .:? "created")
       <*> (o .:? "credentials")
+      <*> (o .:? "groupIds")
       <*> (o .:? "id")
       <*> (o .:? "lastLogin")
       <*> (o .:? "lastUpdated")
@@ -4168,6 +4170,7 @@ instance A.ToJSON p => A.ToJSON (UserP p) where
       , "activated" .= userActivated
       , "created" .= userCreated
       , "credentials" .= userCredentials
+      , "groupIds" .= userGroupIds
       , "id" .= userId
       , "lastLogin" .= userLastLogin
       , "lastUpdated" .= userLastUpdated
@@ -4189,6 +4192,7 @@ mkUser =
   , userActivated = Nothing
   , userCreated = Nothing
   , userCredentials = Nothing
+  , userGroupIds = Nothing
   , userId = Nothing
   , userLastLogin = Nothing
   , userLastUpdated = Nothing
