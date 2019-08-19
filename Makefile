@@ -35,8 +35,10 @@ generate: ## regenerates client from api spec
 	cd $(TARGET) && unzip client.zip
 	rm -f $(TARGET_CLIENT)/git_push.sh
 	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/stack.yaml.patch
+	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/okta.cabal
 	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/expose-full-profile.patch
 	cd $(TARGET_CLIENT) && patch -p1 -i ../../patch/expose-user-groupids.patch
+	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/tests.patch
 	mv -v $(TARGET_CLIENT) $(VC_GEN)
 
 

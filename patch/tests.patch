@@ -1,0 +1,44 @@
+diff --git a/gen/tests/Instances.hs b/gen/tests/Instances.hs
+index 267ccee..c27d82e 100644
+--- a/gen/tests/Instances.hs
++++ b/gen/tests/Instances.hs
+@@ -1,1 +1,3 @@
+ {-# OPTIONS_GHC -fno-warn-unused-imports -fno-warn-unused-matches #-}
++{-# LANGUAGE FlexibleInstances    #-}
++{-# LANGUAGE TypeSynonymInstances #-}
+@@ -1192,11 +1194,11 @@ genU2fFactor :: Int -> Gen U2fFactor
+ genU2fFactor n =
+   U2fFactor
+     <$> arbitraryReducedMaybeValue n -- u2fFactorProfile :: Maybe A.Value
+-  
+-instance Arbitrary User where
++
++instance Arbitrary User' where
+   arbitrary = sized genUser
+ 
+-genUser :: Int -> Gen User
++genUser :: Int -> Gen User'
+ genUser n =
+   User
+     <$> arbitraryReducedMaybe n -- userEmbedded :: Maybe (Map.Map String A.Value)
+@@ -1204,6 +1206,7 @@ genUser n =
+     <*> arbitraryReducedMaybe n -- userActivated :: Maybe DateTime
+     <*> arbitraryReducedMaybe n -- userCreated :: Maybe DateTime
+     <*> arbitraryReducedMaybe n -- userCredentials :: Maybe UserCredentials
++    <*> arbitraryReducedMaybe n -- userGroupIds :: !(Maybe [Text]) -- ^ "groupIds"
+     <*> arbitraryReducedMaybe n -- userId :: Maybe Text
+     <*> arbitraryReducedMaybe n -- userLastLogin :: Maybe DateTime
+     <*> arbitraryReducedMaybe n -- userLastUpdated :: Maybe DateTime
+diff --git a/gen/tests/Test.hs b/gen/tests/Test.hs
+index 88313fb..a349b3d 100644
+--- a/gen/tests/Test.hs
++++ b/gen/tests/Test.hs
+@@ -146,7 +146,7 @@ main =
+       propMimeEq MimeJSON (Proxy :: Proxy TotpFactor)
+       propMimeEq MimeJSON (Proxy :: Proxy TotpFactorProfile)
+       propMimeEq MimeJSON (Proxy :: Proxy U2fFactor)
+-      propMimeEq MimeJSON (Proxy :: Proxy User)
++      propMimeEq MimeJSON (Proxy :: Proxy User')
+       propMimeEq MimeJSON (Proxy :: Proxy UserActivationToken)
+       propMimeEq MimeJSON (Proxy :: Proxy UserCredentials)
+       propMimeEq MimeJSON (Proxy :: Proxy UserNextLogin)

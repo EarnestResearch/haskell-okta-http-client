@@ -1,4 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports -fno-warn-unused-matches #-}
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 module Instances where
 
@@ -1192,11 +1194,11 @@ genU2fFactor :: Int -> Gen U2fFactor
 genU2fFactor n =
   U2fFactor
     <$> arbitraryReducedMaybeValue n -- u2fFactorProfile :: Maybe A.Value
-  
-instance Arbitrary User where
+
+instance Arbitrary User' where
   arbitrary = sized genUser
 
-genUser :: Int -> Gen User
+genUser :: Int -> Gen User'
 genUser n =
   User
     <$> arbitraryReducedMaybe n -- userEmbedded :: Maybe (Map.Map String A.Value)
@@ -1204,6 +1206,7 @@ genUser n =
     <*> arbitraryReducedMaybe n -- userActivated :: Maybe DateTime
     <*> arbitraryReducedMaybe n -- userCreated :: Maybe DateTime
     <*> arbitraryReducedMaybe n -- userCredentials :: Maybe UserCredentials
+    <*> arbitraryReducedMaybe n -- userGroupIds :: !(Maybe [Text]) -- ^ "groupIds"
     <*> arbitraryReducedMaybe n -- userId :: Maybe Text
     <*> arbitraryReducedMaybe n -- userLastLogin :: Maybe DateTime
     <*> arbitraryReducedMaybe n -- userLastUpdated :: Maybe DateTime
