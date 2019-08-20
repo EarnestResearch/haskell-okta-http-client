@@ -6,7 +6,7 @@ author:              Infra team
 maintainer:          infra@earnestresearch.com
 copyright:           2019 Author name here
 
-synopsis:            RIO wrapper around auto-generated Okta API client
+synopsis:            Reader env / IO wrapper around auto-generated Okta API client
 category:            Web
 
 description:         Please see the README on Github at <https://github.com/EarnestResearch/haskell-okta-http-client>
@@ -39,3 +39,15 @@ ghc-options:
 library:
   source-dirs: src
 
+executables:
+  example:
+    main:                Main.hs
+    source-dirs:         example
+    dependencies:
+    - haskell-okta-http-client-rio
+    - optparse-simple
+
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N

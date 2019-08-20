@@ -24,19 +24,22 @@ import           Pipes                 as P
 import           RIO
 
 
-{- | Wraps generated client with runtime RIO environment.
-     We try to extract Link if present.
+{- | Wraps generated client with https://haskell.fpcomplete.com/library/rio environment.
+     We try to extract "next token" pagination Link if present.
      Mime decoding errors throw exceptions.
 -}
 callOkta
   :: ( Produces req accept
      , MimeUnrender accept res
      , MimeType contentType
+     , MonadIO m
+     , MonadThrow m
+     , MonadReader env m
      , HasOktaEnvironment env
      , HasLogFunc env
      )
   => OktaRequest req contentType res accept -- ^ request
-  -> RIO env (res, Maybe NextToken) -- ^ response along with "next" token if any
+  -> m (res, Maybe NextToken) -- ^ response along with "next" token if any
 callOkta oktaRequest = do
   connManager <- view getOktaHttpConnectionManager
   oktaConf <- view getOktaConfig
@@ -67,11 +70,14 @@ paginateOkta
      , HasOptionalParam req After
      , MimeUnrender accept [res]
      , MimeType contentType
+     , MonadIO m
+     , MonadThrow m
+     , MonadReader env m
      , HasOktaEnvironment env
      , HasLogFunc env
      )
   => OktaRequest req contentType [res] accept -- ^ request
-  -> Producer res (RIO env) () -- ^ producer of responses
+  -> Producer res m () -- ^ producer of responses
 paginateOkta req = runPaginateOkta id `P.for` P.each
   where
     runPaginateOkta reqMod = do
