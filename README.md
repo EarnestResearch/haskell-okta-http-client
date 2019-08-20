@@ -2,7 +2,7 @@
 
 Okta [API Reference](https://developer.okta.com/reference/).
 
-Generated client code is in [gen](gen/README.md).
+Generated client code is in [gen](gen/README.md), a small [RIO](https://haskell.fpcomplete.com/library/rio) wrapper is in [rio](rio).
 
 To re-generate please run
 
@@ -20,7 +20,9 @@ with TLS or requests will fail.
 Also note that API token you get from Okta **MUST BE PREFIXED** with `SSWS ` when
 setting up auth method with `AuthApiKeyApiToken`.
 
-### Stack config
+### Auto-generated API
+
+#### Stack config
 
 Please add this to your `stack.yaml` to include in your project:
 
@@ -28,12 +30,12 @@ Please add this to your `stack.yaml` to include in your project:
 extra-deps:
 - katip-0.8.2.0
 - git: ssh://git@github.com/EarnestResearch/haskell-okta-http-client
-  commit: "20d23c24cec1f0a12954b9b8311ffa5300c2ae07"
+  commit: "59916e814e58d8319bb16a2d5621e7cb19aa5522"
   subdirs:
   - gen
 ```
 
-### Example
+#### Example
 
 A complete GHCI example that lists groups:
 
@@ -66,3 +68,28 @@ code
 ```
 
 REPL syntax to paste into `ghci` (run `stack repl` under `gen`).
+
+
+### RIO wrapper
+
+Loads Okta config / HTTP manager from environment, adds pagination to generated APIs with pipes.
+A small complete example is found in [rio/example](rio/example).
+
+
+#### Stack config
+
+Please add this to your `stack.yaml` to include both, auto-generated API as well as RIO wrapper in your project:
+
+```yaml
+resolver: lts-14.1
+
+packages:
+- .
+
+extra-deps:
+- github: EarnestResearch/haskell-okta-http-client
+  commit: "59916e814e58d8319bb16a2d5621e7cb19aa5522"
+  subdirs:
+  - gen
+  - rio
+```
