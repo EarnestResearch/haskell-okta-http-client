@@ -1,3 +1,4 @@
 /target
 /gen/stack.yaml.lock
 *.orig
+.stack-work

@@ -1,0 +1,41 @@
+name:                haskell-okta-http-client-rio
+version:             0.1.0.0
+github:              EarnestResearch/haskell-okta-http-client
+license:             BSD3
+author:              Infra team
+maintainer:          infra@earnestresearch.com
+copyright:           2019 Author name here
+
+synopsis:            RIO wrapper around auto-generated Okta API client
+category:            Web
+
+description:         Please see the README on Github at <https://github.com/EarnestResearch/haskell-okta-http-client>
+
+dependencies:
+- base
+- bytestring
+- http-client
+- http-client-tls
+- http-conduit
+- http-link-header
+- http-types
+- katip
+- microlens
+- microlens-th
+- network-uri
+- okta
+- pipes
+- rio
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wpartial-fields
+- -Wredundant-constraints
+
+library:
+  source-dirs: src
+
