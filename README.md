@@ -30,7 +30,7 @@ Please add this to your `stack.yaml` to include in your project:
 extra-deps:
 - katip-0.8.2.0
 - git: ssh://git@github.com/EarnestResearch/haskell-okta-http-client
-  commit: "59916e814e58d8319bb16a2d5621e7cb19aa5522"
+  commit: "edfc55596ba9ec5c50d6e02b890d984d07d3537e"
   subdirs:
   - gen
 ```
@@ -83,7 +83,7 @@ Please add this to your `stack.yaml` to include both, auto-generated API as well
 ```yaml
 extra-deps:
 - github: EarnestResearch/haskell-okta-http-client
-  commit: "59916e814e58d8319bb16a2d5621e7cb19aa5522"
+  commit: "edfc55596ba9ec5c50d6e02b890d984d07d3537e"
   subdirs:
   - gen
   - rio
