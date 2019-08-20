@@ -11,6 +11,6 @@ instance Exception OktaException
 
 newtype NextToken = NextToken Text deriving (Eq, Show)
 
-class HasOktaEnvironment env where
+class HasLogFunc env => HasOktaEnvironment env where
   getOktaConfig :: Lens' env OktaConfig
   getOktaHttpConnectionManager :: Lens' env NH.Manager

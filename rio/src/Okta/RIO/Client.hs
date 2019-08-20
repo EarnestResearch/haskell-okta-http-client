@@ -36,7 +36,6 @@ callOkta
      , MonadThrow m
      , MonadReader env m
      , HasOktaEnvironment env
-     , HasLogFunc env
      )
   => OktaRequest req contentType res accept -- ^ request
   -> m (res, Maybe NextToken) -- ^ response along with "next" token if any
@@ -74,7 +73,6 @@ paginateOkta
      , MonadThrow m
      , MonadReader env m
      , HasOktaEnvironment env
-     , HasLogFunc env
      )
   => OktaRequest req contentType [res] accept -- ^ request
   -> Producer res m () -- ^ producer of responses
