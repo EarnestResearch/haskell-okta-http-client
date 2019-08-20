@@ -4,7 +4,7 @@ index f1bb059..bbe1f98 100644
 +++ b/gen/stack.yaml
 @@ -1,4 +1,4 @@
 -resolver: lts-13.9
-+resolver: lts-13.25
++resolver: lts-14.1
  build:
    haddock-arguments:
      haddock-args:

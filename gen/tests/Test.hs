@@ -146,7 +146,7 @@ main =
       propMimeEq MimeJSON (Proxy :: Proxy TotpFactor)
       propMimeEq MimeJSON (Proxy :: Proxy TotpFactorProfile)
       propMimeEq MimeJSON (Proxy :: Proxy U2fFactor)
-      propMimeEq MimeJSON (Proxy :: Proxy User)
+      propMimeEq MimeJSON (Proxy :: Proxy User')
       propMimeEq MimeJSON (Proxy :: Proxy UserActivationToken)
       propMimeEq MimeJSON (Proxy :: Proxy UserCredentials)
       propMimeEq MimeJSON (Proxy :: Proxy UserNextLogin)
