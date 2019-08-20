@@ -1,4 +1,4 @@
-name:                haskell-okta-http-client-rio
+name:                okta-rio
 version:             0.1.0.0
 github:              EarnestResearch/haskell-okta-http-client
 license:             BSD3
@@ -44,7 +44,7 @@ executables:
     main:                Main.hs
     source-dirs:         example
     dependencies:
-    - haskell-okta-http-client-rio
+    - okta-rio
     - optparse-simple
 
     ghc-options:

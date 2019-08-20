@@ -8,7 +8,7 @@ import           Import
 import           Network.HTTP.Client.TLS
 import qualified Okta                               as OktaClient
 import           Options.Applicative.Simple
-import qualified Paths_haskell_okta_http_client_rio
+import qualified Paths_okta_rio
 import qualified RIO.ByteString.Lazy                as LBS
 import           RIO.Process
 import           Run
@@ -17,7 +17,7 @@ import           Run
 main :: IO ()
 main = do
   (options, ()) <- simpleOptions
-    $(simpleVersion Paths_haskell_okta_http_client_rio.version)
+    $(simpleVersion Paths_okta_rio.version)
     "Header for command line arguments"
     "Program description, also for command line arguments"
     (Options
