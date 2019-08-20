@@ -81,11 +81,6 @@ A small complete example is found in [rio/example](rio/example).
 Please add this to your `stack.yaml` to include both, auto-generated API as well as RIO wrapper in your project:
 
 ```yaml
-resolver: lts-14.1
-
-packages:
-- .
-
 extra-deps:
 - github: EarnestResearch/haskell-okta-http-client
   commit: "59916e814e58d8319bb16a2d5621e7cb19aa5522"
