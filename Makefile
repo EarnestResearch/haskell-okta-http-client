@@ -16,10 +16,13 @@ help: ## help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
+build: build-gen build-rio ## build code
 
-build: ## build generated client
+build-gen: ## build generated client
 	cd $(VC_GEN) && stack build
 
+build-rio: ## build rio client
+	cd rio && stack build
 
 test: ## run bundled unit tests
 	cd $(VC_GEN) && stack test
