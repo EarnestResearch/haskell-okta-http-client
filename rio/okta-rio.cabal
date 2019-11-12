@@ -1,0 +1,79 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 41a7d43f749001b01f03445dae4338ee6d54ee49f77acad3161bb00b43f93b6b
+
+name:           okta-rio
+version:        0.1.0.0
+synopsis:       Reader env / IO wrapper around auto-generated Okta API client
+description:    Please see the README on Github at <https://github.com/EarnestResearch/haskell-okta-http-client>
+category:       Web
+homepage:       https://github.com/EarnestResearch/haskell-okta-http-client#readme
+bug-reports:    https://github.com/EarnestResearch/haskell-okta-http-client/issues
+author:         Infra team
+maintainer:     infra@earnestresearch.com
+copyright:      2019 Author name here
+license:        BSD3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/EarnestResearch/haskell-okta-http-client
+
+library
+  exposed-modules:
+      Okta.RIO.Client
+      Okta.RIO.Model
+  other-modules:
+      Paths_okta_rio
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base
+    , bytestring
+    , http-client
+    , http-client-tls
+    , http-conduit
+    , http-link-header
+    , http-types
+    , katip
+    , microlens
+    , microlens-th
+    , network-uri
+    , okta
+    , pipes
+    , rio
+  default-language: Haskell2010
+
+executable example
+  main-is: Main.hs
+  other-modules:
+      Import
+      Run
+      Types
+      Paths_okta_rio
+  hs-source-dirs:
+      example
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , bytestring
+    , http-client
+    , http-client-tls
+    , http-conduit
+    , http-link-header
+    , http-types
+    , katip
+    , microlens
+    , microlens-th
+    , network-uri
+    , okta
+    , okta-rio
+    , optparse-simple
+    , pipes
+    , rio
+  default-language: Haskell2010
