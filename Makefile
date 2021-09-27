@@ -10,7 +10,7 @@ TARGET:=target
 TARGET_CLIENT:=$(TARGET)/haskell-http-client-client
 
 HASKELL_API_GEN:=https://api.openapi-generator.tech/api/gen/clients/haskell-http-client
-OKTA_API_SPEC:=https://raw.githubusercontent.com/okta/okta-sdk-golang/master/openapi/spec.json
+OKTA_API_SPEC:=https://raw.githubusercontent.com/okta/okta-management-openapi-spec/master/dist/spec.json
 
 help: ## help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -37,12 +37,14 @@ generate: ## regenerates client from api spec
 		'$(HASKELL_API_GEN)' | jq -r .link | xargs curl -o $(TARGET)/client.zip
 	cd $(TARGET) && unzip client.zip
 	rm -f $(TARGET_CLIENT)/git_push.sh
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/stack.yaml.patch
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/okta.cabal
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/expose-full-profile.patch
-	cd $(TARGET_CLIENT) && patch -p1 -i ../../patch/expose-user-groupids.patch
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/tests.patch
 	mv -v $(TARGET_CLIENT) $(VC_GEN)
+
+
+#cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/stack.yaml.patch
+#cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/okta.cabal
+#cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/expose-full-profile.patch
+#cd $(TARGET_CLIENT) && patch -p1 -i ../../patch/expose-user-groupids.patch
+#cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/tests.patch
 
 
 clean: ## clean work dir

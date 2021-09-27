@@ -72,6 +72,8 @@ hsProject.shellFor {
       haskellNix.pkgs.cacert
       haskellNix.pkgs.git
       haskellNix.pkgs.nix
+      haskellNix.pkgs.curl
+      haskellNix.pkgs.jq
     ] else
       [ ]);
 

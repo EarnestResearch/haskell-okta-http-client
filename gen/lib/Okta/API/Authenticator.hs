@@ -10,7 +10,7 @@
 -}
 
 {-|
-Module : Okta.API.Session
+Module : Okta.API.Authenticator
 -}
 
 {-# LANGUAGE FlexibleContexts #-}
@@ -20,7 +20,7 @@ Module : Okta.API.Session
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing -fno-warn-unused-binds -fno-warn-unused-imports #-}
 
-module Okta.API.Session where
+module Okta.API.Authenticator where
 
 import Okta.Core
 import Okta.MimeTypes
@@ -56,92 +56,83 @@ import qualified Prelude as P
 -- * Operations
 
 
--- ** Session
+-- ** Authenticator
 
--- *** createSession
+-- *** activateAuthenticator
 
--- | @POST \/api\/v1\/sessions@
+-- | @POST \/api\/v1\/authenticators\/{authenticatorId}\/lifecycle\/activate@
 -- 
--- Create Session with Session Token
--- 
--- Creates a new session for a user with a valid session token. Use this API if, for example, you want to set the session cookie yourself instead of allowing Okta to set it, or want to hold the session ID in order to delete a session via the API instead of visiting the logout URL.
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-createSession 
-  :: (Consumes CreateSession MimeJSON, MimeRender MimeJSON CreateSessionRequest)
-  => CreateSessionRequest -- ^ "createSessionRequest"
-  -> OktaRequest CreateSession MimeJSON Session MimeJSON
-createSession createSessionRequest =
-  _mkRequest "POST" ["/api/v1/sessions"]
+activateAuthenticator 
+  :: AuthenticatorId -- ^ "authenticatorId"
+  -> OktaRequest ActivateAuthenticator MimeNoContent Authenticator MimeJSON
+activateAuthenticator (AuthenticatorId authenticatorId) =
+  _mkRequest "POST" ["/api/v1/authenticators/",toPath authenticatorId,"/lifecycle/activate"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
-    `setBodyParam` createSessionRequest
 
-data CreateSession 
-instance HasBodyParam CreateSession CreateSessionRequest 
-
+data ActivateAuthenticator  
 -- | @application/json@
-instance Consumes CreateSession MimeJSON
-
--- | @application/json@
-instance Produces CreateSession MimeJSON
+instance Produces ActivateAuthenticator MimeJSON
 
 
--- *** endSession
+-- *** deactivateAuthenticator
 
--- | @DELETE \/api\/v1\/sessions\/{sessionId}@
+-- | @POST \/api\/v1\/authenticators\/{authenticatorId}\/lifecycle\/deactivate@
 -- 
--- Close Session
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-endSession 
-  :: SessionId -- ^ "sessionId"
-  -> OktaRequest EndSession MimeNoContent NoContent MimeNoContent
-endSession (SessionId sessionId) =
-  _mkRequest "DELETE" ["/api/v1/sessions/",toPath sessionId]
+deactivateAuthenticator 
+  :: AuthenticatorId -- ^ "authenticatorId"
+  -> OktaRequest DeactivateAuthenticator MimeNoContent Authenticator MimeJSON
+deactivateAuthenticator (AuthenticatorId authenticatorId) =
+  _mkRequest "POST" ["/api/v1/authenticators/",toPath authenticatorId,"/lifecycle/deactivate"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
-data EndSession  
-instance Produces EndSession MimeNoContent
+data DeactivateAuthenticator  
+-- | @application/json@
+instance Produces DeactivateAuthenticator MimeJSON
 
 
--- *** getSession
+-- *** getAuthenticator
 
--- | @GET \/api\/v1\/sessions\/{sessionId}@
+-- | @GET \/api\/v1\/authenticators\/{authenticatorId}@
 -- 
--- Get details about a session.
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-getSession 
-  :: SessionId -- ^ "sessionId"
-  -> OktaRequest GetSession MimeNoContent Session MimeJSON
-getSession (SessionId sessionId) =
-  _mkRequest "GET" ["/api/v1/sessions/",toPath sessionId]
+getAuthenticator 
+  :: AuthenticatorId -- ^ "authenticatorId"
+  -> OktaRequest GetAuthenticator MimeNoContent Authenticator MimeJSON
+getAuthenticator (AuthenticatorId authenticatorId) =
+  _mkRequest "GET" ["/api/v1/authenticators/",toPath authenticatorId]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
-data GetSession  
+data GetAuthenticator  
 -- | @application/json@
-instance Produces GetSession MimeJSON
+instance Produces GetAuthenticator MimeJSON
 
 
--- *** refreshSession
+-- *** listAuthenticators
 
--- | @POST \/api\/v1\/sessions\/{sessionId}\/lifecycle\/refresh@
+-- | @GET \/api\/v1\/authenticators@
 -- 
--- Refresh Session
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-refreshSession 
-  :: SessionId -- ^ "sessionId"
-  -> OktaRequest RefreshSession MimeNoContent Session MimeJSON
-refreshSession (SessionId sessionId) =
-  _mkRequest "POST" ["/api/v1/sessions/",toPath sessionId,"/lifecycle/refresh"]
+listAuthenticators 
+  :: OktaRequest ListAuthenticators MimeNoContent [Authenticator] MimeJSON
+listAuthenticators =
+  _mkRequest "GET" ["/api/v1/authenticators"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
-data RefreshSession  
+data ListAuthenticators  
 -- | @application/json@
-instance Produces RefreshSession MimeJSON
+instance Produces ListAuthenticators MimeJSON
 
