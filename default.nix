@@ -70,10 +70,11 @@ hsProject.shellFor {
     ++ (if enableHLS then [ hls-wrapper ] else [ ])
     ++ (if enablePureShell then [
       haskellNix.pkgs.cacert
-      haskellNix.pkgs.git
-      haskellNix.pkgs.nix
       haskellNix.pkgs.curl
+      haskellNix.pkgs.git
       haskellNix.pkgs.jq
+      haskellNix.pkgs.nix
+      haskellNix.pkgs.unzip
     ] else
       [ ]);
 
