@@ -1,0 +1,7 @@
+packages: gen/*.cabal rio/*.cabal
+
+jobs: $ncpus
+
+optimization: False
+
+tests: True
