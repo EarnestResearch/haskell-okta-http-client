@@ -13,6 +13,7 @@
 Module : Okta.Core
 -}
 
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -50,7 +51,9 @@ import qualified Data.Proxy as P (Proxy(..))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Time as TI
-import qualified Data.Time.ISO8601 as TI
+import qualified Data.Time.Format as TI
+-- https://github.com/haskell/time/issues/119
+import qualified Data.Time.Format.Internal as TI
 import qualified GHC.Base as P (Alternative)
 import qualified Lens.Micro as L
 import qualified Network.HTTP.Client.MultipartFormData as NH
@@ -421,7 +424,14 @@ _memptyToNothing x = x
 -- * DateTime Formatting
 
 newtype DateTime = DateTime { unDateTime :: TI.UTCTime }
-  deriving (P.Eq,P.Data,P.Ord,P.Typeable,NF.NFData,TI.ParseTime,TI.FormatTime)
+  deriving (P.Eq,P.Data,P.Ord,P.Typeable,NF.NFData,TI.FormatTime)
+
+-- https://github.com/haskell/time/issues/119
+-- fixed in 1.9.4 but katip dependency is currently holding things back
+instance TI.ParseTime DateTime where
+  parseTimeSpecifier _ = TI.parseTimeSpecifier (P.Proxy :: P.Proxy TI.UTCTime)
+  buildTime l xs = DateTime <$> TI.buildTime l xs
+
 instance A.FromJSON DateTime where
   parseJSON = A.withText "DateTime" (_readDateTime . T.unpack)
 instance A.ToJSON DateTime where
@@ -436,19 +446,18 @@ instance MimeRender MimeMultipartFormData DateTime where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | @_parseISO8601@
-_readDateTime :: (TI.ParseTime t, Monad m, Alternative m) => String -> m t
+_readDateTime :: (TI.ParseTime t, Monad m, P.MonadFail m, Alternative m) => String -> m t
 _readDateTime =
   _parseISO8601
 {-# INLINE _readDateTime #-}
 
 -- | @TI.formatISO8601Millis@
 _showDateTime :: (t ~ TI.UTCTime, TI.FormatTime t) => t -> String
-_showDateTime =
-  TI.formatISO8601Millis
+_showDateTime = TI.formatTime TI.defaultTimeLocale "%FT%T%3QZ"
 {-# INLINE _showDateTime #-}
 
 -- | parse an ISO8601 date-time string
-_parseISO8601 :: (TI.ParseTime t, Monad m, Alternative m) => String -> m t
+_parseISO8601 :: (TI.ParseTime t, Monad m, P.MonadFail m, Alternative m) => String -> m t
 _parseISO8601 t =
   P.asum $
   P.flip (TI.parseTimeM True TI.defaultTimeLocale) t <$>
@@ -458,7 +467,14 @@ _parseISO8601 t =
 -- * Date Formatting
 
 newtype Date = Date { unDate :: TI.Day }
-  deriving (P.Enum,P.Eq,P.Data,P.Ord,P.Ix,NF.NFData,TI.ParseTime,TI.FormatTime)
+  deriving (P.Enum,P.Eq,P.Data,P.Ord,P.Ix,NF.NFData,TI.FormatTime)
+
+-- https://github.com/haskell/time/issues/119
+-- fixed in 1.9.4 but katip dependency is currently holding things back
+instance TI.ParseTime Date where
+  parseTimeSpecifier _ = TI.parseTimeSpecifier (P.Proxy :: P.Proxy TI.Day)
+  buildTime l xs = Date <$> TI.buildTime l xs
+
 instance A.FromJSON Date where
   parseJSON = A.withText "Date" (_readDate . T.unpack)
 instance A.ToJSON Date where
@@ -473,7 +489,7 @@ instance MimeRender MimeMultipartFormData Date where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | @TI.parseTimeM True TI.defaultTimeLocale "%Y-%m-%d"@
-_readDate :: (TI.ParseTime t, Monad m) => String -> m t
+_readDate :: (TI.ParseTime t, Monad m, P.MonadFail m) => String -> m t
 _readDate =
   TI.parseTimeM True TI.defaultTimeLocale "%Y-%m-%d"
 {-# INLINE _readDate #-}
@@ -505,7 +521,7 @@ instance MimeRender MimeMultipartFormData ByteArray where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | read base64 encoded characters
-_readByteArray :: Monad m => Text -> m ByteArray
+_readByteArray :: (Monad m, P.MonadFail m) => Text -> m ByteArray
 _readByteArray = P.either P.fail (pure . ByteArray) . BL64.decode . BL.fromStrict . T.encodeUtf8
 {-# INLINE _readByteArray #-}
 
@@ -531,7 +547,7 @@ instance P.Show Binary where
 instance MimeRender MimeMultipartFormData Binary where
   mimeRender _ = unBinary
 
-_readBinaryBase64 :: Monad m => Text -> m Binary
+_readBinaryBase64 :: (Monad m, P.MonadFail m) => Text -> m Binary
 _readBinaryBase64 = P.either P.fail (pure . Binary) . BL64.decode . BL.fromStrict . T.encodeUtf8
 {-# INLINE _readBinaryBase64 #-}
 
@@ -543,3 +559,7 @@ _showBinaryBase64 = T.decodeUtf8 . BL.toStrict . BL64.encode . unBinary
 
 type Lens_' s a = Lens_ s s a a
 type Lens_ s t a b = forall (f :: * -> *). Functor f => (a -> f b) -> s -> f t
+
+-- Also related to changes in "time" package, 'fail' is not part of MonadFail
+instance P.MonadFail (P.Either String) where
+  fail = P.Left

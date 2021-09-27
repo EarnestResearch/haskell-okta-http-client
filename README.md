@@ -1,5 +1,11 @@
 ## OpenAPI Auto-Generated Bindings to `Okta API`
 
+
+**NOTE**: this project is in a hacked up maintenance state atm (as we may not need it in the near future).
+To clean it up properly we'd need to regenerate/review client but that touches some other 
+[external changes](https://github.com/EarnestResearch/haskell-okta-http-client/tree/regenerate-okta-client).
+
+
 Okta [API Reference](https://developer.okta.com/reference/).
 
 Generated client code is in [gen](gen/README.md), a small [RIO](https://haskell.fpcomplete.com/library/rio) wrapper is in [rio](rio).
