@@ -50,7 +50,7 @@ import qualified Data.Proxy as P (Proxy(..))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Time as TI
-import qualified Data.Time.ISO8601 as TI
+import qualified Data.Time.Format as TI
 import qualified GHC.Base as P (Alternative)
 import qualified Lens.Micro as L
 import qualified Network.HTTP.Client.MultipartFormData as NH
@@ -443,8 +443,7 @@ _readDateTime =
 
 -- | @TI.formatISO8601Millis@
 _showDateTime :: (t ~ TI.UTCTime, TI.FormatTime t) => t -> String
-_showDateTime =
-  TI.formatISO8601Millis
+_showDateTime = TI.formatTime TI.defaultTimeLocale "%FT%T%3QZ"
 {-# INLINE _showDateTime #-}
 
 -- | parse an ISO8601 date-time string
