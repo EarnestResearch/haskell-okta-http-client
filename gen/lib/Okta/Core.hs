@@ -51,7 +51,6 @@ import qualified Data.Proxy as P (Proxy(..))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Time as TI
-import qualified Data.Time.Format as TI
 -- https://github.com/haskell/time/issues/119
 import qualified Data.Time.Format.Internal as TI
 import qualified GHC.Base as P (Alternative)
@@ -63,8 +62,7 @@ import qualified Web.FormUrlEncoded as WH
 import qualified Web.HttpApiData as WH
 import qualified Text.Printf as T
 
-import Control.Applicative ((<|>))
-import Control.Applicative (Alternative)
+import Control.Applicative ( (<|>), Alternative )
 import Data.Function ((&))
 import Data.Foldable(foldlM)
 import Data.Monoid ((<>))
@@ -111,7 +109,7 @@ newConfig = do
         , configLogContext = logCxt
         , configAuthMethods = []
         , configValidateAuthMethods = True
-        }  
+        }
 
 -- | updates config use AuthMethod on matching requests
 addAuthMethod :: AuthMethod auth => OktaConfig -> auth -> OktaConfig
@@ -133,7 +131,7 @@ withStderrLogging p = do
 -- | updates the config to disable logging
 withNoLogging :: OktaConfig -> OktaConfig
 withNoLogging p = p { configLogExecWithContext =  runNullLogExec}
- 
+
 -- * OktaRequest
 
 -- | Represents a request.
@@ -257,18 +255,18 @@ removeHeader req header =
 
 _setContentTypeHeader :: forall req contentType res accept. MimeType contentType => OktaRequest req contentType res accept -> OktaRequest req contentType res accept
 _setContentTypeHeader req =
-    case mimeType (P.Proxy :: P.Proxy contentType) of 
+    case mimeType (P.Proxy :: P.Proxy contentType) of
         Just m -> req `setHeader` [("content-type", BC.pack $ P.show m)]
         Nothing -> req `removeHeader` ["content-type"]
 
 _setAcceptHeader :: forall req contentType res accept. MimeType accept => OktaRequest req contentType res accept -> OktaRequest req contentType res accept
 _setAcceptHeader req =
-    case mimeType (P.Proxy :: P.Proxy accept) of 
+    case mimeType (P.Proxy :: P.Proxy accept) of
         Just m -> req `setHeader` [("accept", BC.pack $ P.show m)]
         Nothing -> req `removeHeader` ["accept"]
 
 setQuery :: OktaRequest req contentType res accept -> [NH.QueryItem] -> OktaRequest req contentType res accept
-setQuery req query = 
+setQuery req query =
   req &
   L.over
     (rParamsL . paramsQueryL)
@@ -277,25 +275,25 @@ setQuery req query =
     cifst = CI.mk . P.fst
 
 addForm :: OktaRequest req contentType res accept -> WH.Form -> OktaRequest req contentType res accept
-addForm req newform = 
+addForm req newform =
     let form = case paramsBody (rParams req) of
             ParamBodyFormUrlEncoded _form -> _form
             _ -> mempty
     in req & L.set (rParamsL . paramsBodyL) (ParamBodyFormUrlEncoded (newform <> form))
 
 _addMultiFormPart :: OktaRequest req contentType res accept -> NH.Part -> OktaRequest req contentType res accept
-_addMultiFormPart req newpart = 
+_addMultiFormPart req newpart =
     let parts = case paramsBody (rParams req) of
             ParamBodyMultipartFormData _parts -> _parts
             _ -> []
     in req & L.set (rParamsL . paramsBodyL) (ParamBodyMultipartFormData (newpart : parts))
 
 _setBodyBS :: OktaRequest req contentType res accept -> B.ByteString -> OktaRequest req contentType res accept
-_setBodyBS req body = 
+_setBodyBS req body =
     req & L.set (rParamsL . paramsBodyL) (ParamBodyB body)
 
 _setBodyLBS :: OktaRequest req contentType res accept -> BL.ByteString -> OktaRequest req contentType res accept
-_setBodyLBS req body = 
+_setBodyLBS req body =
     req & L.set (rParamsL . paramsBodyL) (ParamBodyBL body)
 
 _hasAuthType :: AuthMethod authMethod => OktaRequest req contentType res accept -> P.Proxy authMethod -> OktaRequest req contentType res accept
@@ -364,7 +362,7 @@ _toCollA' c encode one xs = case c of
     {-# INLINE go #-}
     {-# INLINE expandList #-}
     {-# INLINE combine #-}
-  
+
 -- * AuthMethods
 
 -- | Provides a method to apply auth methods to requests
@@ -395,7 +393,7 @@ _applyAuthMethods req config@(OktaConfig {configAuthMethods = as}) =
   foldlM go req as
   where
     go r (AnyAuthMethod a) = applyAuthMethod config a r
-  
+
 -- * Utils
 
 -- | Removes Null fields.  (OpenAPI-Specification 2.0 does not allow Null in JSON)
@@ -426,12 +424,6 @@ _memptyToNothing x = x
 newtype DateTime = DateTime { unDateTime :: TI.UTCTime }
   deriving (P.Eq,P.Data,P.Ord,P.Typeable,NF.NFData,TI.FormatTime)
 
--- https://github.com/haskell/time/issues/119
--- fixed in 1.9.4 but katip dependency is currently holding things back
-instance TI.ParseTime DateTime where
-  parseTimeSpecifier _ = TI.parseTimeSpecifier (P.Proxy :: P.Proxy TI.UTCTime)
-  buildTime l xs = DateTime <$> TI.buildTime l xs
-
 instance A.FromJSON DateTime where
   parseJSON = A.withText "DateTime" (_readDateTime . T.unpack)
 instance A.ToJSON DateTime where
@@ -446,7 +438,7 @@ instance MimeRender MimeMultipartFormData DateTime where
   mimeRender _ = mimeRenderDefaultMultipartFormData
 
 -- | @_parseISO8601@
-_readDateTime :: (TI.ParseTime t, Monad m, P.MonadFail m, Alternative m) => String -> m t
+_readDateTime :: (Monad m, P.MonadFail m, Alternative m) => String -> m DateTime
 _readDateTime =
   _parseISO8601
 {-# INLINE _readDateTime #-}
@@ -457,11 +449,10 @@ _showDateTime = TI.formatTime TI.defaultTimeLocale "%FT%T%3QZ"
 {-# INLINE _showDateTime #-}
 
 -- | parse an ISO8601 date-time string
-_parseISO8601 :: (TI.ParseTime t, Monad m, P.MonadFail m, Alternative m) => String -> m t
-_parseISO8601 t =
-  P.asum $
-  P.flip (TI.parseTimeM True TI.defaultTimeLocale) t <$>
-  ["%FT%T%QZ", "%FT%T%Q%z", "%FT%T%Q%Z"]
+_parseISO8601 :: (Monad m, P.MonadFail m, Alternative m) => String -> m DateTime
+_parseISO8601 t = DateTime <$> P.asum (
+    P.flip (TI.parseTimeM True TI.defaultTimeLocale) t <$> ["%FT%T%QZ", "%FT%T%Q%z", "%FT%T%Q%Z"]
+  )
 {-# INLINE _parseISO8601 #-}
 
 -- * Date Formatting
@@ -502,7 +493,6 @@ _showDate =
 
 -- * Byte/Binary Formatting
 
-  
 -- | base64 encoded characters
 newtype ByteArray = ByteArray { unByteArray :: BL.ByteString }
   deriving (P.Eq,P.Data,P.Ord,P.Typeable,NF.NFData)
