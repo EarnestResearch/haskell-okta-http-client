@@ -53,27 +53,6 @@ instance Arbitrary Date where
     arbitrary = Date <$> arbitrary
     shrink (Date xs) = Date <$> shrink xs
 
--- | A naive Arbitrary instance for A.Value:
-instance Arbitrary A.Value where
-  arbitrary = frequency [(3, simpleTypes), (1, arrayTypes), (1, objectTypes)]
-    where
-      simpleTypes :: Gen A.Value
-      simpleTypes =
-        frequency
-          [ (1, return A.Null)
-          , (2, liftM A.Bool (arbitrary :: Gen Bool))
-          , (2, liftM (A.Number . fromIntegral) (arbitrary :: Gen Int))
-          , (2, liftM (A.String . T.pack) (arbitrary :: Gen String))
-          ]
-      mapF (k, v) = (T.pack k, v)
-      simpleAndArrays = frequency [(1, sized sizedArray), (4, simpleTypes)]
-      arrayTypes = sized sizedArray
-      objectTypes = sized sizedObject
-      sizedArray n = liftM (A.Array . V.fromList) $ replicateM n simpleTypes
-      sizedObject n =
-        liftM (A.object . map mapF) $
-        replicateM n $ (,) <$> (arbitrary :: Gen String) <*> simpleAndArrays
-    
 -- | Checks if a given list has no duplicates in _O(n log n)_.
 hasNoDups
   :: (Ord a)

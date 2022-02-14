@@ -40,7 +40,7 @@ let
       src = ./.;
     };
 
-    compiler-nix-name = "ghc8106";
+    compiler-nix-name = "ghc8107";
 
     modules = [{
       packages.haskell-okta-http-client = {

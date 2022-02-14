@@ -16,33 +16,30 @@ help: ## help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-build: build-gen build-rio ## build code
-
-build-gen: ## build generated client
-	cd $(VC_GEN) && stack build
-
-build-rio: ## build rio client
-	cd rio && stack build
+build: ## run bundled unit tests
+	cabal build all
 
 test: ## run bundled unit tests
-	cd $(VC_GEN) && stack test
+	cabal test all
 
-# Move generated code to version controlled dir
-generate: ## regenerates client from api spec
-	rm -rf $(TARGET) $(VC_GEN)
-	mkdir -pv $(TARGET)
-	curl -X POST --header 'Content-Type: application/json' \
-		--header 'Accept: application/json' \
-		-d '{"openAPIUrl": "$(OKTA_API_SPEC)"}' \
-		'$(HASKELL_API_GEN)' | jq -r .link | xargs curl -o $(TARGET)/client.zip
-	cd $(TARGET) && unzip client.zip
-	rm -f $(TARGET_CLIENT)/git_push.sh
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/stack.yaml.patch
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/okta.cabal
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/expose-full-profile.patch
-	cd $(TARGET_CLIENT) && patch -p1 -i ../../patch/expose-user-groupids.patch
-	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/tests.patch
-	mv -v $(TARGET_CLIENT) $(VC_GEN)
+# This hasn't been done in a long time and things have diverged,
+# keeping around for reference but if we are to ever update it
+# properly we need to review first.
+#   generate: ## regenerates client from api spec
+#   	rm -rf $(TARGET) $(VC_GEN)
+#   	mkdir -pv $(TARGET)
+#   	curl -X POST --header 'Content-Type: application/json' \
+#   		--header 'Accept: application/json' \
+#   		-d '{"openAPIUrl": "$(OKTA_API_SPEC)"}' \
+#   		'$(HASKELL_API_GEN)' | jq -r .link | xargs curl -o $(TARGET)/client.zip
+#   	cd $(TARGET) && unzip client.zip
+#   	rm -f $(TARGET_CLIENT)/git_push.sh
+#   	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/stack.yaml.patch
+#   	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/okta.cabal
+#   	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/expose-full-profile.patch
+#   	cd $(TARGET_CLIENT) && patch -p1 -i ../../patch/expose-user-groupids.patch
+#   	cd $(TARGET_CLIENT) && patch -p2 -i ../../patch/tests.patch
+#   	mv -v $(TARGET_CLIENT) $(VC_GEN)
 
 
 clean: ## clean work dir
