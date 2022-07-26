@@ -1,10 +1,6 @@
 ## OpenAPI Auto-Generated Bindings to `Okta API`
 
-
-**NOTE**: this project is in a hacked up maintenance state atm (as we may not need it in the near future).
-To clean it up properly we'd need to regenerate/review client but that touches some other 
-[external changes](https://github.com/EarnestResearch/haskell-okta-http-client/tree/regenerate-okta-client).
-
+Haskell environment is assumed to be available [see ghcup](https://www.haskell.org/ghcup/).
 
 Okta [API Reference](https://developer.okta.com/reference/).
 
