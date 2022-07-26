@@ -1,12 +1,11 @@
 diff --git a/gen/lib/Okta/Model.hs b/gen/lib/Okta/Model.hs
-index 114f64d..ec8fd70 100644
+index eed4fd4..ecd9381 100644
 --- a/gen/lib/Okta/Model.hs
 +++ b/gen/lib/Okta/Model.hs
-@@ -4116,9 +4116,16 @@ mkU2fFactor =
-   { u2fFactorProfile = Nothing
+@@ -12960,9 +12960,15 @@ mkU2fUserFactorProfile =
+   { u2fUserFactorProfileCredentialId = Nothing
    }
  
-+
 +-- | A quick hack to expose custom profile attributes by default
 +type User = UserP A.Object
 +
@@ -17,18 +16,19 @@ index 114f64d..ec8fd70 100644
  -- | User
 -data User = User
 +data UserP p = User
-   { userEmbedded :: !(Maybe (Map.Map String A.Value)) -- ^ "_embedded"
-   , userLinks :: !(Maybe (Map.Map String A.Value)) -- ^ "_links"
-   , userActivated :: !(Maybe DateTime) -- ^ "activated"
-@@ -4128,14 +4135,14 @@ data User = User
-   , userLastLogin :: !(Maybe DateTime) -- ^ "lastLogin"
-   , userLastUpdated :: !(Maybe DateTime) -- ^ "lastUpdated"
-   , userPasswordChanged :: !(Maybe DateTime) -- ^ "passwordChanged"
+   { userEmbedded :: !(Maybe (Map.Map String A.Value)) -- ^ /ReadOnly/ "_embedded"
+   , userLinks :: !(Maybe (Map.Map String A.Value)) -- ^ /ReadOnly/ "_links"
+   , userActivated :: !(Maybe DateTime) -- ^ /ReadOnly/ "activated"
+@@ -12973,7 +12979,7 @@ data User = User
+   , userLastLogin :: !(Maybe DateTime) -- ^ /ReadOnly/ "lastLogin"
+   , userLastUpdated :: !(Maybe DateTime) -- ^ /ReadOnly/ "lastUpdated"
+   , userPasswordChanged :: !(Maybe DateTime) -- ^ /ReadOnly/ "passwordChanged"
 -  , userProfile :: !(Maybe UserProfile) -- ^ "profile"
 +  , userProfile :: !(Maybe p) -- ^ "profile"
    , userStatus :: !(Maybe UserStatus) -- ^ "status"
-   , userStatusChanged :: !(Maybe DateTime) -- ^ "statusChanged"
+   , userStatusChanged :: !(Maybe DateTime) -- ^ /ReadOnly/ "statusChanged"
    , userTransitioningToStatus :: !(Maybe UserStatus) -- ^ "transitioningToStatus"
+@@ -12981,7 +12987,7 @@ data User = User
    } deriving (P.Show, P.Eq, P.Typeable)
  
  -- | FromJSON User
@@ -37,8 +37,8 @@ index 114f64d..ec8fd70 100644
    parseJSON = A.withObject "User" $ \o ->
      User
        <$> (o .:? "_embedded")
-@@ -4153,7 +4160,7 @@ instance A.FromJSON User where
-       <*> (o .:? "transitioningToStatus")
+@@ -13001,7 +13007,7 @@ instance A.FromJSON User where
+       <*> (o .:? "type")
  
  -- | ToJSON User
 -instance A.ToJSON User where
@@ -47,11 +47,11 @@ index 114f64d..ec8fd70 100644
     _omitNulls
        [ "_embedded" .= userEmbedded
 diff --git a/gen/lib/Okta/ModelLens.hs b/gen/lib/Okta/ModelLens.hs
-index c2ea0e3..1420cc0 100644
+index 284946b..c05858c 100644
 --- a/gen/lib/Okta/ModelLens.hs
 +++ b/gen/lib/Okta/ModelLens.hs
-@@ -2429,7 +2429,7 @@ userPasswordChangedL f User{..} = (\userPasswordChanged -> User { userPasswordCh
- {-# INLINE userPasswordChangedL #-}
+@@ -7639,7 +7639,7 @@ userGroupIdsL f User{..} = (\userGroupIds -> User { userGroupIds, ..} ) <$> f us
+ {-# INLINE userGroupIdsL #-}
  
  -- | 'userProfile' Lens
 -userProfileL :: Lens_' User (Maybe UserProfile)

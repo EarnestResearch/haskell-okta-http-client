@@ -1,16 +1,16 @@
-diff --git gen/lib/Okta/Model.hs gen/lib/Okta/Model.hs
-index ec8fd70..0c7d2db 100644
---- gen/lib/Okta/Model.hs
-+++ gen/lib/Okta/Model.hs
-@@ -4131,6 +4131,7 @@ data UserP p = User
-   , userActivated :: !(Maybe DateTime) -- ^ "activated"
-   , userCreated :: !(Maybe DateTime) -- ^ "created"
+diff --git a/gen/lib/Okta/Model.hs b/gen/lib/Okta/Model.hs
+index 2b3977e..eed4fd4 100644
+--- a/gen/lib/Okta/Model.hs
++++ b/gen/lib/Okta/Model.hs
+@@ -12968,6 +12968,7 @@ data User = User
+   , userActivated :: !(Maybe DateTime) -- ^ /ReadOnly/ "activated"
+   , userCreated :: !(Maybe DateTime) -- ^ /ReadOnly/ "created"
    , userCredentials :: !(Maybe UserCredentials) -- ^ "credentials"
 +  , userGroupIds :: !(Maybe [Text]) -- ^ "groupIds"
-   , userId :: !(Maybe Text) -- ^ "id"
-   , userLastLogin :: !(Maybe DateTime) -- ^ "lastLogin"
-   , userLastUpdated :: !(Maybe DateTime) -- ^ "lastUpdated"
-@@ -4150,6 +4151,7 @@ instance A.FromJSON p => A.FromJSON (UserP p) where
+   , userId :: !(Maybe Text) -- ^ /ReadOnly/ "id"
+   , userLastLogin :: !(Maybe DateTime) -- ^ /ReadOnly/ "lastLogin"
+   , userLastUpdated :: !(Maybe DateTime) -- ^ /ReadOnly/ "lastUpdated"
+@@ -12988,6 +12989,7 @@ instance A.FromJSON User where
        <*> (o .:? "activated")
        <*> (o .:? "created")
        <*> (o .:? "credentials")
@@ -18,7 +18,7 @@ index ec8fd70..0c7d2db 100644
        <*> (o .:? "id")
        <*> (o .:? "lastLogin")
        <*> (o .:? "lastUpdated")
-@@ -4168,6 +4170,7 @@ instance A.ToJSON p => A.ToJSON (UserP p) where
+@@ -13007,6 +13009,7 @@ instance A.ToJSON User where
        , "activated" .= userActivated
        , "created" .= userCreated
        , "credentials" .= userCredentials
@@ -26,7 +26,7 @@ index ec8fd70..0c7d2db 100644
        , "id" .= userId
        , "lastLogin" .= userLastLogin
        , "lastUpdated" .= userLastUpdated
-@@ -4189,6 +4192,7 @@ mkUser =
+@@ -13029,6 +13032,7 @@ mkUser =
    , userActivated = Nothing
    , userCreated = Nothing
    , userCredentials = Nothing
@@ -34,11 +34,11 @@ index ec8fd70..0c7d2db 100644
    , userId = Nothing
    , userLastLogin = Nothing
    , userLastUpdated = Nothing
-diff --git gen/lib/Okta/ModelLens.hs gen/lib/Okta/ModelLens.hs
-index 1420cc0..1caa6bf 100644
---- gen/lib/Okta/ModelLens.hs
-+++ gen/lib/Okta/ModelLens.hs
-@@ -2428,6 +2428,11 @@ userPasswordChangedL :: Lens_' User (Maybe DateTime)
+diff --git a/gen/lib/Okta/ModelLens.hs b/gen/lib/Okta/ModelLens.hs
+index 19dfc44..284946b 100644
+--- a/gen/lib/Okta/ModelLens.hs
++++ b/gen/lib/Okta/ModelLens.hs
+@@ -7633,6 +7633,11 @@ userPasswordChangedL :: Lens_' User (Maybe DateTime)
  userPasswordChangedL f User{..} = (\userPasswordChanged -> User { userPasswordChanged, ..} ) <$> f userPasswordChanged
  {-# INLINE userPasswordChangedL #-}
  
@@ -48,5 +48,5 @@ index 1420cc0..1caa6bf 100644
 +{-# INLINE userGroupIdsL #-}
 +
  -- | 'userProfile' Lens
- userProfileL :: Lens_' (UserP p) (Maybe p)
+ userProfileL :: Lens_' User (Maybe UserProfile)
  userProfileL f User{..} = (\userProfile -> User { userProfile, ..} ) <$> f userProfile

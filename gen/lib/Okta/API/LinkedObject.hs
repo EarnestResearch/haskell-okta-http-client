@@ -10,7 +10,7 @@
 -}
 
 {-|
-Module : Okta.API.Session
+Module : Okta.API.LinkedObject
 -}
 
 {-# LANGUAGE FlexibleContexts #-}
@@ -20,7 +20,7 @@ Module : Okta.API.Session
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing -fno-warn-unused-binds -fno-warn-unused-imports #-}
 
-module Okta.API.Session where
+module Okta.API.LinkedObject where
 
 import Okta.Core
 import Okta.MimeTypes
@@ -56,92 +56,89 @@ import qualified Prelude as P
 -- * Operations
 
 
--- ** Session
+-- ** LinkedObject
 
--- *** createSession
+-- *** addLinkedObjectDefinition
 
--- | @POST \/api\/v1\/sessions@
+-- | @POST \/api\/v1\/meta\/schemas\/user\/linkedObjects@
 -- 
--- Create Session with Session Token
--- 
--- Creates a new session for a user with a valid session token. Use this API if, for example, you want to set the session cookie yourself instead of allowing Okta to set it, or want to hold the session ID in order to delete a session via the API instead of visiting the logout URL.
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-createSession
-  :: (Consumes CreateSession MimeJSON, MimeRender MimeJSON CreateSessionRequest)
-  => CreateSessionRequest -- ^ "createSessionRequest"
-  -> OktaRequest CreateSession MimeJSON Session MimeJSON
-createSession createSessionRequest =
-  _mkRequest "POST" ["/api/v1/sessions"]
+addLinkedObjectDefinition
+  :: (Consumes AddLinkedObjectDefinition MimeJSON, MimeRender MimeJSON LinkedObject)
+  => LinkedObject -- ^ "linkedObject"
+  -> OktaRequest AddLinkedObjectDefinition MimeJSON LinkedObject MimeJSON
+addLinkedObjectDefinition linkedObject =
+  _mkRequest "POST" ["/api/v1/meta/schemas/user/linkedObjects"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
-    `setBodyParam` createSessionRequest
+    `setBodyParam` linkedObject
 
-data CreateSession 
-instance HasBodyParam CreateSession CreateSessionRequest 
-
--- | @application/json@
-instance Consumes CreateSession MimeJSON
+data AddLinkedObjectDefinition 
+instance HasBodyParam AddLinkedObjectDefinition LinkedObject 
 
 -- | @application/json@
-instance Produces CreateSession MimeJSON
+instance Consumes AddLinkedObjectDefinition MimeJSON
+
+-- | @application/json@
+instance Produces AddLinkedObjectDefinition MimeJSON
 
 
--- *** endSession
+-- *** deleteLinkedObjectDefinition
 
--- | @DELETE \/api\/v1\/sessions\/{sessionId}@
+-- | @DELETE \/api\/v1\/meta\/schemas\/user\/linkedObjects\/{linkedObjectName}@
 -- 
--- Close Session
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-endSession
-  :: SessionId -- ^ "sessionId"
-  -> OktaRequest EndSession MimeNoContent NoContent MimeNoContent
-endSession (SessionId sessionId) =
-  _mkRequest "DELETE" ["/api/v1/sessions/",toPath sessionId]
+deleteLinkedObjectDefinition
+  :: LinkedObjectName -- ^ "linkedObjectName"
+  -> OktaRequest DeleteLinkedObjectDefinition MimeNoContent NoContent MimeNoContent
+deleteLinkedObjectDefinition (LinkedObjectName linkedObjectName) =
+  _mkRequest "DELETE" ["/api/v1/meta/schemas/user/linkedObjects/",toPath linkedObjectName]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
-data EndSession  
-instance Produces EndSession MimeNoContent
+data DeleteLinkedObjectDefinition  
+instance Produces DeleteLinkedObjectDefinition MimeNoContent
 
 
--- *** getSession
+-- *** getLinkedObjectDefinition
 
--- | @GET \/api\/v1\/sessions\/{sessionId}@
+-- | @GET \/api\/v1\/meta\/schemas\/user\/linkedObjects\/{linkedObjectName}@
 -- 
--- Get details about a session.
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-getSession
-  :: SessionId -- ^ "sessionId"
-  -> OktaRequest GetSession MimeNoContent Session MimeJSON
-getSession (SessionId sessionId) =
-  _mkRequest "GET" ["/api/v1/sessions/",toPath sessionId]
+getLinkedObjectDefinition
+  :: LinkedObjectName -- ^ "linkedObjectName"
+  -> OktaRequest GetLinkedObjectDefinition MimeNoContent LinkedObject MimeJSON
+getLinkedObjectDefinition (LinkedObjectName linkedObjectName) =
+  _mkRequest "GET" ["/api/v1/meta/schemas/user/linkedObjects/",toPath linkedObjectName]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
-data GetSession  
+data GetLinkedObjectDefinition  
 -- | @application/json@
-instance Produces GetSession MimeJSON
+instance Produces GetLinkedObjectDefinition MimeJSON
 
 
--- *** refreshSession
+-- *** listLinkedObjectDefinitions
 
--- | @POST \/api\/v1\/sessions\/{sessionId}\/lifecycle\/refresh@
+-- | @GET \/api\/v1\/meta\/schemas\/user\/linkedObjects@
 -- 
--- Refresh Session
+-- Success
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
-refreshSession
-  :: SessionId -- ^ "sessionId"
-  -> OktaRequest RefreshSession MimeNoContent Session MimeJSON
-refreshSession (SessionId sessionId) =
-  _mkRequest "POST" ["/api/v1/sessions/",toPath sessionId,"/lifecycle/refresh"]
+listLinkedObjectDefinitions
+  :: OktaRequest ListLinkedObjectDefinitions MimeNoContent [LinkedObject] MimeJSON
+listLinkedObjectDefinitions =
+  _mkRequest "GET" ["/api/v1/meta/schemas/user/linkedObjects"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
-data RefreshSession  
+data ListLinkedObjectDefinitions  
 -- | @application/json@
-instance Produces RefreshSession MimeJSON
+instance Produces ListLinkedObjectDefinitions MimeJSON
 

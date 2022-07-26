@@ -2,6 +2,18 @@
 
 Haskell environment is assumed to be available [see ghcup](https://www.haskell.org/ghcup/).
 
+Known to compile with
+
+``` text
+$ ghcup list -c set -r
+ghc 9.2.2 base-4.16.1.0 hls-powered
+cabal 3.6.2.0 latest,recommended 
+hls 1.7.0.0 latest,recommended 
+stack 2.7.5 latest,recommended 
+ghcup 0.1.17.8 latest,recommended 
+```
+
+
 Okta [API Reference](https://developer.okta.com/reference/).
 
 Generated client code is in [gen](gen/README.md), a small [RIO](https://haskell.fpcomplete.com/library/rio) wrapper is in [rio](rio).

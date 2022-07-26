@@ -1,0 +1,52 @@
+diff --git a/gen/lib/Okta/Model.hs b/gen/lib/Okta/Model.hs
+index ecd9381..e85e9db 100644
+--- a/gen/lib/Okta/Model.hs
++++ b/gen/lib/Okta/Model.hs
+@@ -15880,13 +15880,13 @@ instance WH.FromHttpApiData E'ProfileMappingPropertyPushStatus where parseQueryP
+ instance MimeRender MimeMultipartFormData E'ProfileMappingPropertyPushStatus where mimeRender _ = mimeRenderDefaultMultipartFormData
+ 
+ -- | unwrap 'E'ProfileMappingPropertyPushStatus' enum
+-fromE'ProfileMappingPropertyPushStatus :: E'ProfileMappingPropertyPushStatus -> A.Value
++fromE'ProfileMappingPropertyPushStatus :: E'ProfileMappingPropertyPushStatus -> Text
+ fromE'ProfileMappingPropertyPushStatus = \case
+   E'ProfileMappingPropertyPushStatus'PUSH -> "PUSH"
+   E'ProfileMappingPropertyPushStatus'DONT_PUSH -> "DONT_PUSH"
+ 
+ -- | parse 'E'ProfileMappingPropertyPushStatus' enum
+-toE'ProfileMappingPropertyPushStatus :: A.Value -> P.Either String E'ProfileMappingPropertyPushStatus
++toE'ProfileMappingPropertyPushStatus :: Text -> P.Either String E'ProfileMappingPropertyPushStatus
+ toE'ProfileMappingPropertyPushStatus = \case
+   "PUSH" -> P.Right E'ProfileMappingPropertyPushStatus'PUSH
+   "DONT_PUSH" -> P.Right E'ProfileMappingPropertyPushStatus'DONT_PUSH
+@@ -16642,13 +16642,13 @@ instance WH.FromHttpApiData E'UserSchemaAttributeScope where parseQueryParam o =
+ instance MimeRender MimeMultipartFormData E'UserSchemaAttributeScope where mimeRender _ = mimeRenderDefaultMultipartFormData
+ 
+ -- | unwrap 'E'UserSchemaAttributeScope' enum
+-fromE'UserSchemaAttributeScope :: E'UserSchemaAttributeScope -> A.Value
++fromE'UserSchemaAttributeScope :: E'UserSchemaAttributeScope -> Text
+ fromE'UserSchemaAttributeScope = \case
+   E'UserSchemaAttributeScope'SELF -> "SELF"
+   E'UserSchemaAttributeScope'NONE -> "NONE"
+ 
+ -- | parse 'E'UserSchemaAttributeScope' enum
+-toE'UserSchemaAttributeScope :: A.Value -> P.Either String E'UserSchemaAttributeScope
++toE'UserSchemaAttributeScope :: Text -> P.Either String E'UserSchemaAttributeScope
+ toE'UserSchemaAttributeScope = \case
+   "SELF" -> P.Right E'UserSchemaAttributeScope'SELF
+   "NONE" -> P.Right E'UserSchemaAttributeScope'NONE
+@@ -16670,13 +16670,13 @@ instance WH.FromHttpApiData E'UserSchemaAttributeUnion where parseQueryParam o =
+ instance MimeRender MimeMultipartFormData E'UserSchemaAttributeUnion where mimeRender _ = mimeRenderDefaultMultipartFormData
+ 
+ -- | unwrap 'E'UserSchemaAttributeUnion' enum
+-fromE'UserSchemaAttributeUnion :: E'UserSchemaAttributeUnion -> A.Value
++fromE'UserSchemaAttributeUnion :: E'UserSchemaAttributeUnion -> Text
+ fromE'UserSchemaAttributeUnion = \case
+   E'UserSchemaAttributeUnion'DISABLE -> "DISABLE"
+   E'UserSchemaAttributeUnion'ENABLE -> "ENABLE"
+ 
+ -- | parse 'E'UserSchemaAttributeUnion' enum
+-toE'UserSchemaAttributeUnion :: A.Value -> P.Either String E'UserSchemaAttributeUnion
++toE'UserSchemaAttributeUnion :: Text -> P.Either String E'UserSchemaAttributeUnion
+ toE'UserSchemaAttributeUnion = \case
+   "DISABLE" -> P.Right E'UserSchemaAttributeUnion'DISABLE
+   "ENABLE" -> P.Right E'UserSchemaAttributeUnion'ENABLE
