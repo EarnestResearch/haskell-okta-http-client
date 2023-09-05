@@ -334,6 +334,7 @@ genApplicationCredentialsOAuthClient n =
     <$> arbitraryReducedMaybe n -- applicationCredentialsOAuthClientAutoKeyRotation :: Maybe Bool
     <*> arbitraryReducedMaybe n -- applicationCredentialsOAuthClientClientId :: Maybe Text
     <*> arbitraryReducedMaybe n -- applicationCredentialsOAuthClientClientSecret :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationCredentialsOAuthClientPkceRequired :: Maybe Bool
     <*> arbitraryReducedMaybe n -- applicationCredentialsOAuthClientTokenEndpointAuthMethod :: Maybe OAuthEndpointAuthenticationMethod
   
 instance Arbitrary ApplicationCredentialsSigning where
@@ -398,11 +399,25 @@ instance Arbitrary ApplicationSettings where
 genApplicationSettings :: Int -> Gen ApplicationSettings
 genApplicationSettings n =
   ApplicationSettings
-    <$> arbitraryReducedMaybeValue n -- applicationSettingsApp :: Maybe A.Value
+    <$> arbitraryReducedMaybe n -- applicationSettingsApp :: Maybe ApplicationSettingsApplication
     <*> arbitraryReducedMaybe n -- applicationSettingsImplicitAssignment :: Maybe Bool
     <*> arbitraryReducedMaybe n -- applicationSettingsInlineHookId :: Maybe Text
     <*> arbitraryReducedMaybe n -- applicationSettingsNotifications :: Maybe ApplicationSettingsNotifications
     <*> arbitraryReducedMaybe n -- applicationSettingsNotes :: Maybe ApplicationSettingsNotes
+  
+instance Arbitrary ApplicationSettingsApplication where
+  arbitrary = sized genApplicationSettingsApplication
+
+genApplicationSettingsApplication :: Int -> Gen ApplicationSettingsApplication
+genApplicationSettingsApplication n =
+  ApplicationSettingsApplication
+    <$> arbitraryReducedMaybe n -- applicationSettingsApplicationOrgName :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationSettingsApplicationUrl :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationSettingsApplicationAcsUrl :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationSettingsApplicationButtonField :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationSettingsApplicationPasswordField :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationSettingsApplicationUsernameField :: Maybe Text
+    <*> arbitraryReducedMaybe n -- applicationSettingsApplicationLoginUrlRegex :: Maybe Text
   
 instance Arbitrary ApplicationSettingsNotes where
   arbitrary = sized genApplicationSettingsNotes
@@ -550,6 +565,7 @@ genAuthorizationServer n =
     <*> arbitraryReducedMaybe n -- authorizationServerAudiences :: Maybe [Text]
     <*> arbitraryReducedMaybe n -- authorizationServerCreated :: Maybe DateTime
     <*> arbitraryReducedMaybe n -- authorizationServerCredentials :: Maybe AuthorizationServerCredentials
+    <*> arbitraryReducedMaybe n -- authorizationServerDefault :: Maybe Bool
     <*> arbitraryReducedMaybe n -- authorizationServerDescription :: Maybe Text
     <*> arbitraryReducedMaybe n -- authorizationServerId :: Maybe Text
     <*> arbitraryReducedMaybe n -- authorizationServerIssuer :: Maybe Text
@@ -829,6 +845,28 @@ genClientPolicyCondition :: Int -> Gen ClientPolicyCondition
 genClientPolicyCondition n =
   ClientPolicyCondition
     <$> arbitraryReducedMaybe n -- clientPolicyConditionInclude :: Maybe [Text]
+  
+instance Arbitrary ClientSecret where
+  arbitrary = sized genClientSecret
+
+genClientSecret :: Int -> Gen ClientSecret
+genClientSecret n =
+  ClientSecret
+    <$> arbitraryReducedMaybe n -- clientSecretId :: Maybe Text
+    <*> arbitraryReducedMaybe n -- clientSecretClientSecret :: Maybe Text
+    <*> arbitraryReducedMaybe n -- clientSecretSecretHash :: Maybe Text
+    <*> arbitraryReducedMaybe n -- clientSecretCreated :: Maybe DateTime
+    <*> arbitraryReducedMaybe n -- clientSecretLastUpdated :: Maybe DateTime
+    <*> arbitraryReducedMaybe n -- clientSecretStatus :: Maybe E'Status2
+    <*> arbitraryReducedMaybe n -- clientSecretLinks :: Maybe (Map.Map String A.Value)
+  
+instance Arbitrary ClientSecretMetadata where
+  arbitrary = sized genClientSecretMetadata
+
+genClientSecretMetadata :: Int -> Gen ClientSecretMetadata
+genClientSecretMetadata n =
+  ClientSecretMetadata
+    <$> arbitraryReducedMaybe n -- clientSecretMetadataClientSecret :: Maybe Text
   
 instance Arbitrary Compliance where
   arbitrary = sized genCompliance
@@ -1906,6 +1944,61 @@ genMDMEnrollmentPolicyRuleCondition n =
     <$> arbitraryReducedMaybe n -- mDMEnrollmentPolicyRuleConditionBlockNonSafeAndroid :: Maybe Bool
     <*> arbitraryReducedMaybe n -- mDMEnrollmentPolicyRuleConditionEnrollment :: Maybe E'Enrollment
   
+instance Arbitrary MultifactorEnrollmentPolicy where
+  arbitrary = sized genMultifactorEnrollmentPolicy
+
+genMultifactorEnrollmentPolicy :: Int -> Gen MultifactorEnrollmentPolicy
+genMultifactorEnrollmentPolicy n =
+  MultifactorEnrollmentPolicy
+    <$> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyEmbedded :: Maybe (Map.Map String A.Value)
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyLinks :: Maybe (Map.Map String A.Value)
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyConditions :: Maybe PolicyRuleConditions
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyCreated :: Maybe DateTime
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyDescription :: Maybe Text
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyId :: Maybe Text
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyLastUpdated :: Maybe DateTime
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyName :: Maybe Text
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyPriority :: Maybe Int
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyStatus :: Maybe E'Status2
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicySystem :: Maybe Bool
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyType :: Maybe PolicyType
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicySettings :: Maybe MultifactorEnrollmentPolicySettings
+  
+instance Arbitrary MultifactorEnrollmentPolicyAuthenticatorSettings where
+  arbitrary = sized genMultifactorEnrollmentPolicyAuthenticatorSettings
+
+genMultifactorEnrollmentPolicyAuthenticatorSettings :: Int -> Gen MultifactorEnrollmentPolicyAuthenticatorSettings
+genMultifactorEnrollmentPolicyAuthenticatorSettings n =
+  MultifactorEnrollmentPolicyAuthenticatorSettings
+    <$> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyAuthenticatorSettingsConstraints :: Maybe MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyAuthenticatorSettingsEnroll :: Maybe MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyAuthenticatorSettingsKey :: Maybe MultifactorEnrollmentPolicyAuthenticatorType
+  
+instance Arbitrary MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints where
+  arbitrary = sized genMultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+
+genMultifactorEnrollmentPolicyAuthenticatorSettingsConstraints :: Int -> Gen MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+genMultifactorEnrollmentPolicyAuthenticatorSettingsConstraints n =
+  MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+    <$> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups :: Maybe [Text]
+  
+instance Arbitrary MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll where
+  arbitrary = sized genMultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+
+genMultifactorEnrollmentPolicyAuthenticatorSettingsEnroll :: Int -> Gen MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+genMultifactorEnrollmentPolicyAuthenticatorSettingsEnroll n =
+  MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+    <$> arbitraryReducedMaybe n -- multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf :: Maybe MultifactorEnrollmentPolicyAuthenticatorStatus
+  
+instance Arbitrary MultifactorEnrollmentPolicySettings where
+  arbitrary = sized genMultifactorEnrollmentPolicySettings
+
+genMultifactorEnrollmentPolicySettings :: Int -> Gen MultifactorEnrollmentPolicySettings
+genMultifactorEnrollmentPolicySettings n =
+  MultifactorEnrollmentPolicySettings
+    <$> arbitraryReducedMaybe n -- multifactorEnrollmentPolicySettingsAuthenticators :: Maybe [MultifactorEnrollmentPolicyAuthenticatorSettings]
+    <*> arbitraryReducedMaybe n -- multifactorEnrollmentPolicySettingsType :: Maybe MultifactorEnrollmentPolicySettingsType
+  
 instance Arbitrary NetworkZone where
   arbitrary = sized genNetworkZone
 
@@ -2803,6 +2896,70 @@ genPreRegistrationInlineHook n =
   PreRegistrationInlineHook
     <$> arbitraryReducedMaybe n -- preRegistrationInlineHookInlineHookId :: Maybe Text
   
+instance Arbitrary PreviewSAMLAppMetadata200Response where
+  arbitrary = sized genPreviewSAMLAppMetadata200Response
+
+genPreviewSAMLAppMetadata200Response :: Int -> Gen PreviewSAMLAppMetadata200Response
+genPreviewSAMLAppMetadata200Response n =
+  PreviewSAMLAppMetadata200Response
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptor :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptor
+  
+instance Arbitrary PreviewSAMLAppMetadata200ResponseEntityDescriptor where
+  arbitrary = sized genPreviewSAMLAppMetadata200ResponseEntityDescriptor
+
+genPreviewSAMLAppMetadata200ResponseEntityDescriptor :: Int -> Gen PreviewSAMLAppMetadata200ResponseEntityDescriptor
+genPreviewSAMLAppMetadata200ResponseEntityDescriptor n =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptor
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorEntityId :: Maybe Text
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+  
+instance Arbitrary PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor where
+  arbitrary = sized genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor :: Int -> Gen PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor n =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned :: Maybe Bool
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration :: Maybe Text
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat :: Maybe [Text]
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+  
+instance Arbitrary PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor where
+  arbitrary = sized genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor :: Int -> Gen PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor n =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse :: Maybe Text
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+  
+instance Arbitrary PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo where
+  arbitrary = sized genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo :: Int -> Gen PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo n =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data :: Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+  
+instance Arbitrary PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data where
+  arbitrary = sized genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data :: Int -> Gen PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data n =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate :: Maybe Text
+  
+instance Arbitrary PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService where
+  arbitrary = sized genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService :: Int -> Gen PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+genPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService n =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+    <$> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding :: Maybe Text
+    <*> arbitraryReducedMaybe n -- previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation :: Maybe Text
+  
 instance Arbitrary ProfileEnrollmentPolicyRule where
   arbitrary = sized genProfileEnrollmentPolicyRule
 
@@ -2824,6 +2981,7 @@ genProfileEnrollmentPolicyRuleAction n =
     <*> arbitraryReducedMaybe n -- profileEnrollmentPolicyRuleActionActivationRequirements :: Maybe ProfileEnrollmentPolicyRuleActivationRequirement
     <*> arbitraryReducedMaybe n -- profileEnrollmentPolicyRuleActionTargetGroupIds :: Maybe [Text]
     <*> arbitraryReducedMaybe n -- profileEnrollmentPolicyRuleActionUnknownUserAction :: Maybe Text
+    <*> arbitraryReducedMaybe n -- profileEnrollmentPolicyRuleActionUiSchemaId :: Maybe Text
   
 instance Arbitrary ProfileEnrollmentPolicyRuleActions where
   arbitrary = sized genProfileEnrollmentPolicyRuleActions
@@ -3177,6 +3335,7 @@ genSamlApplicationSettingsSignOn n =
     <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnRecipientOverride :: Maybe Text
     <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnRequestCompressed :: Maybe Bool
     <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnResponseSigned :: Maybe Bool
+    <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnSamlSignedRequestEnabled :: Maybe Bool
     <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnSignatureAlgorithm :: Maybe Text
     <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnSlo :: Maybe SingleLogout
     <*> arbitraryReducedMaybe n -- samlApplicationSettingsSignOnSpIssuer :: Maybe Text
@@ -4003,6 +4162,7 @@ genVerificationMethod n =
     <*> arbitraryReducedMaybe n -- verificationMethodType :: Maybe Text
     <*> arbitraryReducedMaybe n -- verificationMethodReauthenticateIn :: Maybe Text
     <*> arbitraryReducedMaybe n -- verificationMethodConstraints :: Maybe [AccessPolicyConstraints]
+    <*> arbitraryReducedMaybe n -- verificationMethodInactivityPeriod :: Maybe Text
   
 instance Arbitrary VerifyFactorRequest where
   arbitrary = sized genVerifyFactorRequest
@@ -4356,6 +4516,15 @@ instance Arbitrary LogCredentialType where
   arbitrary = arbitraryBoundedEnum
 
 instance Arbitrary LogSeverity where
+  arbitrary = arbitraryBoundedEnum
+
+instance Arbitrary MultifactorEnrollmentPolicyAuthenticatorStatus where
+  arbitrary = arbitraryBoundedEnum
+
+instance Arbitrary MultifactorEnrollmentPolicyAuthenticatorType where
+  arbitrary = arbitraryBoundedEnum
+
+instance Arbitrary MultifactorEnrollmentPolicySettingsType where
   arbitrary = arbitraryBoundedEnum
 
 instance Arbitrary NetworkZoneAddressType where

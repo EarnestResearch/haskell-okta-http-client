@@ -78,6 +78,38 @@ data ActivateAuthenticator
 instance Produces ActivateAuthenticator MimeJSON
 
 
+-- *** createAuthenticator
+
+-- | @POST \/api\/v1\/authenticators@
+-- 
+-- Create an Authenticator
+-- 
+-- Create Authenticator
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+createAuthenticator
+  :: (Consumes CreateAuthenticator MimeJSON, MimeRender MimeJSON Authenticator)
+  => Authenticator -- ^ "authenticator"
+  -> OktaRequest CreateAuthenticator MimeJSON Authenticator MimeJSON
+createAuthenticator authenticator =
+  _mkRequest "POST" ["/api/v1/authenticators"]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+    `setBodyParam` authenticator
+
+data CreateAuthenticator 
+instance HasBodyParam CreateAuthenticator Authenticator 
+instance HasOptionalParam CreateAuthenticator Activate where
+  applyOptionalParam req (Activate xs) =
+    req `addQuery` toQuery ("activate", Just xs)
+
+-- | @application/json@
+instance Consumes CreateAuthenticator MimeJSON
+
+-- | @application/json@
+instance Produces CreateAuthenticator MimeJSON
+
+
 -- *** deactivateAuthenticator
 
 -- | @POST \/api\/v1\/authenticators\/{authenticatorId}\/lifecycle\/deactivate@
@@ -122,7 +154,9 @@ instance Produces GetAuthenticator MimeJSON
 
 -- | @GET \/api\/v1\/authenticators@
 -- 
--- Success
+-- Lists all available Authenticators
+-- 
+-- List Authenticators
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 

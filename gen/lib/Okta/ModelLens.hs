@@ -519,6 +519,11 @@ applicationCredentialsOAuthClientClientSecretL :: Lens_' ApplicationCredentialsO
 applicationCredentialsOAuthClientClientSecretL f ApplicationCredentialsOAuthClient{..} = (\applicationCredentialsOAuthClientClientSecret -> ApplicationCredentialsOAuthClient { applicationCredentialsOAuthClientClientSecret, ..} ) <$> f applicationCredentialsOAuthClientClientSecret
 {-# INLINE applicationCredentialsOAuthClientClientSecretL #-}
 
+-- | 'applicationCredentialsOAuthClientPkceRequired' Lens
+applicationCredentialsOAuthClientPkceRequiredL :: Lens_' ApplicationCredentialsOAuthClient (Maybe Bool)
+applicationCredentialsOAuthClientPkceRequiredL f ApplicationCredentialsOAuthClient{..} = (\applicationCredentialsOAuthClientPkceRequired -> ApplicationCredentialsOAuthClient { applicationCredentialsOAuthClientPkceRequired, ..} ) <$> f applicationCredentialsOAuthClientPkceRequired
+{-# INLINE applicationCredentialsOAuthClientPkceRequiredL #-}
+
 -- | 'applicationCredentialsOAuthClientTokenEndpointAuthMethod' Lens
 applicationCredentialsOAuthClientTokenEndpointAuthMethodL :: Lens_' ApplicationCredentialsOAuthClient (Maybe OAuthEndpointAuthenticationMethod)
 applicationCredentialsOAuthClientTokenEndpointAuthMethodL f ApplicationCredentialsOAuthClient{..} = (\applicationCredentialsOAuthClientTokenEndpointAuthMethod -> ApplicationCredentialsOAuthClient { applicationCredentialsOAuthClientTokenEndpointAuthMethod, ..} ) <$> f applicationCredentialsOAuthClientTokenEndpointAuthMethod
@@ -662,7 +667,7 @@ applicationLicensingSeatCountL f ApplicationLicensing{..} = (\applicationLicensi
 -- * ApplicationSettings
 
 -- | 'applicationSettingsApp' Lens
-applicationSettingsAppL :: Lens_' ApplicationSettings (Maybe A.Value)
+applicationSettingsAppL :: Lens_' ApplicationSettings (Maybe ApplicationSettingsApplication)
 applicationSettingsAppL f ApplicationSettings{..} = (\applicationSettingsApp -> ApplicationSettings { applicationSettingsApp, ..} ) <$> f applicationSettingsApp
 {-# INLINE applicationSettingsAppL #-}
 
@@ -685,6 +690,45 @@ applicationSettingsNotificationsL f ApplicationSettings{..} = (\applicationSetti
 applicationSettingsNotesL :: Lens_' ApplicationSettings (Maybe ApplicationSettingsNotes)
 applicationSettingsNotesL f ApplicationSettings{..} = (\applicationSettingsNotes -> ApplicationSettings { applicationSettingsNotes, ..} ) <$> f applicationSettingsNotes
 {-# INLINE applicationSettingsNotesL #-}
+
+
+
+-- * ApplicationSettingsApplication
+
+-- | 'applicationSettingsApplicationOrgName' Lens
+applicationSettingsApplicationOrgNameL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationOrgNameL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationOrgName -> ApplicationSettingsApplication { applicationSettingsApplicationOrgName, ..} ) <$> f applicationSettingsApplicationOrgName
+{-# INLINE applicationSettingsApplicationOrgNameL #-}
+
+-- | 'applicationSettingsApplicationUrl' Lens
+applicationSettingsApplicationUrlL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationUrlL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationUrl -> ApplicationSettingsApplication { applicationSettingsApplicationUrl, ..} ) <$> f applicationSettingsApplicationUrl
+{-# INLINE applicationSettingsApplicationUrlL #-}
+
+-- | 'applicationSettingsApplicationAcsUrl' Lens
+applicationSettingsApplicationAcsUrlL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationAcsUrlL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationAcsUrl -> ApplicationSettingsApplication { applicationSettingsApplicationAcsUrl, ..} ) <$> f applicationSettingsApplicationAcsUrl
+{-# INLINE applicationSettingsApplicationAcsUrlL #-}
+
+-- | 'applicationSettingsApplicationButtonField' Lens
+applicationSettingsApplicationButtonFieldL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationButtonFieldL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationButtonField -> ApplicationSettingsApplication { applicationSettingsApplicationButtonField, ..} ) <$> f applicationSettingsApplicationButtonField
+{-# INLINE applicationSettingsApplicationButtonFieldL #-}
+
+-- | 'applicationSettingsApplicationPasswordField' Lens
+applicationSettingsApplicationPasswordFieldL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationPasswordFieldL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationPasswordField -> ApplicationSettingsApplication { applicationSettingsApplicationPasswordField, ..} ) <$> f applicationSettingsApplicationPasswordField
+{-# INLINE applicationSettingsApplicationPasswordFieldL #-}
+
+-- | 'applicationSettingsApplicationUsernameField' Lens
+applicationSettingsApplicationUsernameFieldL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationUsernameFieldL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationUsernameField -> ApplicationSettingsApplication { applicationSettingsApplicationUsernameField, ..} ) <$> f applicationSettingsApplicationUsernameField
+{-# INLINE applicationSettingsApplicationUsernameFieldL #-}
+
+-- | 'applicationSettingsApplicationLoginUrlRegex' Lens
+applicationSettingsApplicationLoginUrlRegexL :: Lens_' ApplicationSettingsApplication (Maybe Text)
+applicationSettingsApplicationLoginUrlRegexL f ApplicationSettingsApplication{..} = (\applicationSettingsApplicationLoginUrlRegex -> ApplicationSettingsApplication { applicationSettingsApplicationLoginUrlRegex, ..} ) <$> f applicationSettingsApplicationLoginUrlRegex
+{-# INLINE applicationSettingsApplicationLoginUrlRegexL #-}
 
 
 
@@ -1002,6 +1046,11 @@ authorizationServerCreatedL f AuthorizationServer{..} = (\authorizationServerCre
 authorizationServerCredentialsL :: Lens_' AuthorizationServer (Maybe AuthorizationServerCredentials)
 authorizationServerCredentialsL f AuthorizationServer{..} = (\authorizationServerCredentials -> AuthorizationServer { authorizationServerCredentials, ..} ) <$> f authorizationServerCredentials
 {-# INLINE authorizationServerCredentialsL #-}
+
+-- | 'authorizationServerDefault' Lens
+authorizationServerDefaultL :: Lens_' AuthorizationServer (Maybe Bool)
+authorizationServerDefaultL f AuthorizationServer{..} = (\authorizationServerDefault -> AuthorizationServer { authorizationServerDefault, ..} ) <$> f authorizationServerDefault
+{-# INLINE authorizationServerDefaultL #-}
 
 -- | 'authorizationServerDescription' Lens
 authorizationServerDescriptionL :: Lens_' AuthorizationServer (Maybe Text)
@@ -1576,6 +1625,54 @@ channelBindingRequiredL f ChannelBinding{..} = (\channelBindingRequired -> Chann
 clientPolicyConditionIncludeL :: Lens_' ClientPolicyCondition (Maybe [Text])
 clientPolicyConditionIncludeL f ClientPolicyCondition{..} = (\clientPolicyConditionInclude -> ClientPolicyCondition { clientPolicyConditionInclude, ..} ) <$> f clientPolicyConditionInclude
 {-# INLINE clientPolicyConditionIncludeL #-}
+
+
+
+-- * ClientSecret
+
+-- | 'clientSecretId' Lens
+clientSecretIdL :: Lens_' ClientSecret (Maybe Text)
+clientSecretIdL f ClientSecret{..} = (\clientSecretId -> ClientSecret { clientSecretId, ..} ) <$> f clientSecretId
+{-# INLINE clientSecretIdL #-}
+
+-- | 'clientSecretClientSecret' Lens
+clientSecretClientSecretL :: Lens_' ClientSecret (Maybe Text)
+clientSecretClientSecretL f ClientSecret{..} = (\clientSecretClientSecret -> ClientSecret { clientSecretClientSecret, ..} ) <$> f clientSecretClientSecret
+{-# INLINE clientSecretClientSecretL #-}
+
+-- | 'clientSecretSecretHash' Lens
+clientSecretSecretHashL :: Lens_' ClientSecret (Maybe Text)
+clientSecretSecretHashL f ClientSecret{..} = (\clientSecretSecretHash -> ClientSecret { clientSecretSecretHash, ..} ) <$> f clientSecretSecretHash
+{-# INLINE clientSecretSecretHashL #-}
+
+-- | 'clientSecretCreated' Lens
+clientSecretCreatedL :: Lens_' ClientSecret (Maybe DateTime)
+clientSecretCreatedL f ClientSecret{..} = (\clientSecretCreated -> ClientSecret { clientSecretCreated, ..} ) <$> f clientSecretCreated
+{-# INLINE clientSecretCreatedL #-}
+
+-- | 'clientSecretLastUpdated' Lens
+clientSecretLastUpdatedL :: Lens_' ClientSecret (Maybe DateTime)
+clientSecretLastUpdatedL f ClientSecret{..} = (\clientSecretLastUpdated -> ClientSecret { clientSecretLastUpdated, ..} ) <$> f clientSecretLastUpdated
+{-# INLINE clientSecretLastUpdatedL #-}
+
+-- | 'clientSecretStatus' Lens
+clientSecretStatusL :: Lens_' ClientSecret (Maybe E'Status2)
+clientSecretStatusL f ClientSecret{..} = (\clientSecretStatus -> ClientSecret { clientSecretStatus, ..} ) <$> f clientSecretStatus
+{-# INLINE clientSecretStatusL #-}
+
+-- | 'clientSecretLinks' Lens
+clientSecretLinksL :: Lens_' ClientSecret (Maybe (Map.Map String A.Value))
+clientSecretLinksL f ClientSecret{..} = (\clientSecretLinks -> ClientSecret { clientSecretLinks, ..} ) <$> f clientSecretLinks
+{-# INLINE clientSecretLinksL #-}
+
+
+
+-- * ClientSecretMetadata
+
+-- | 'clientSecretMetadataClientSecret' Lens
+clientSecretMetadataClientSecretL :: Lens_' ClientSecretMetadata (Maybe Text)
+clientSecretMetadataClientSecretL f ClientSecretMetadata{..} = (\clientSecretMetadataClientSecret -> ClientSecretMetadata { clientSecretMetadataClientSecret, ..} ) <$> f clientSecretMetadataClientSecret
+{-# INLINE clientSecretMetadataClientSecretL #-}
 
 
 
@@ -3936,6 +4033,138 @@ mDMEnrollmentPolicyRuleConditionEnrollmentL f MDMEnrollmentPolicyRuleCondition{.
 
 
 
+-- * MultifactorEnrollmentPolicy
+
+-- | 'multifactorEnrollmentPolicyEmbedded' Lens
+multifactorEnrollmentPolicyEmbeddedL :: Lens_' MultifactorEnrollmentPolicy (Maybe (Map.Map String A.Value))
+multifactorEnrollmentPolicyEmbeddedL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyEmbedded -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyEmbedded, ..} ) <$> f multifactorEnrollmentPolicyEmbedded
+{-# INLINE multifactorEnrollmentPolicyEmbeddedL #-}
+
+-- | 'multifactorEnrollmentPolicyLinks' Lens
+multifactorEnrollmentPolicyLinksL :: Lens_' MultifactorEnrollmentPolicy (Maybe (Map.Map String A.Value))
+multifactorEnrollmentPolicyLinksL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyLinks -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyLinks, ..} ) <$> f multifactorEnrollmentPolicyLinks
+{-# INLINE multifactorEnrollmentPolicyLinksL #-}
+
+-- | 'multifactorEnrollmentPolicyConditions' Lens
+multifactorEnrollmentPolicyConditionsL :: Lens_' MultifactorEnrollmentPolicy (Maybe PolicyRuleConditions)
+multifactorEnrollmentPolicyConditionsL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyConditions -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyConditions, ..} ) <$> f multifactorEnrollmentPolicyConditions
+{-# INLINE multifactorEnrollmentPolicyConditionsL #-}
+
+-- | 'multifactorEnrollmentPolicyCreated' Lens
+multifactorEnrollmentPolicyCreatedL :: Lens_' MultifactorEnrollmentPolicy (Maybe DateTime)
+multifactorEnrollmentPolicyCreatedL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyCreated -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyCreated, ..} ) <$> f multifactorEnrollmentPolicyCreated
+{-# INLINE multifactorEnrollmentPolicyCreatedL #-}
+
+-- | 'multifactorEnrollmentPolicyDescription' Lens
+multifactorEnrollmentPolicyDescriptionL :: Lens_' MultifactorEnrollmentPolicy (Maybe Text)
+multifactorEnrollmentPolicyDescriptionL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyDescription -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyDescription, ..} ) <$> f multifactorEnrollmentPolicyDescription
+{-# INLINE multifactorEnrollmentPolicyDescriptionL #-}
+
+-- | 'multifactorEnrollmentPolicyId' Lens
+multifactorEnrollmentPolicyIdL :: Lens_' MultifactorEnrollmentPolicy (Maybe Text)
+multifactorEnrollmentPolicyIdL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyId -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyId, ..} ) <$> f multifactorEnrollmentPolicyId
+{-# INLINE multifactorEnrollmentPolicyIdL #-}
+
+-- | 'multifactorEnrollmentPolicyLastUpdated' Lens
+multifactorEnrollmentPolicyLastUpdatedL :: Lens_' MultifactorEnrollmentPolicy (Maybe DateTime)
+multifactorEnrollmentPolicyLastUpdatedL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyLastUpdated -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyLastUpdated, ..} ) <$> f multifactorEnrollmentPolicyLastUpdated
+{-# INLINE multifactorEnrollmentPolicyLastUpdatedL #-}
+
+-- | 'multifactorEnrollmentPolicyName' Lens
+multifactorEnrollmentPolicyNameL :: Lens_' MultifactorEnrollmentPolicy (Maybe Text)
+multifactorEnrollmentPolicyNameL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyName -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyName, ..} ) <$> f multifactorEnrollmentPolicyName
+{-# INLINE multifactorEnrollmentPolicyNameL #-}
+
+-- | 'multifactorEnrollmentPolicyPriority' Lens
+multifactorEnrollmentPolicyPriorityL :: Lens_' MultifactorEnrollmentPolicy (Maybe Int)
+multifactorEnrollmentPolicyPriorityL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyPriority -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyPriority, ..} ) <$> f multifactorEnrollmentPolicyPriority
+{-# INLINE multifactorEnrollmentPolicyPriorityL #-}
+
+-- | 'multifactorEnrollmentPolicyStatus' Lens
+multifactorEnrollmentPolicyStatusL :: Lens_' MultifactorEnrollmentPolicy (Maybe E'Status2)
+multifactorEnrollmentPolicyStatusL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyStatus -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyStatus, ..} ) <$> f multifactorEnrollmentPolicyStatus
+{-# INLINE multifactorEnrollmentPolicyStatusL #-}
+
+-- | 'multifactorEnrollmentPolicySystem' Lens
+multifactorEnrollmentPolicySystemL :: Lens_' MultifactorEnrollmentPolicy (Maybe Bool)
+multifactorEnrollmentPolicySystemL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicySystem -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicySystem, ..} ) <$> f multifactorEnrollmentPolicySystem
+{-# INLINE multifactorEnrollmentPolicySystemL #-}
+
+-- | 'multifactorEnrollmentPolicyType' Lens
+multifactorEnrollmentPolicyTypeL :: Lens_' MultifactorEnrollmentPolicy (Maybe PolicyType)
+multifactorEnrollmentPolicyTypeL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicyType -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicyType, ..} ) <$> f multifactorEnrollmentPolicyType
+{-# INLINE multifactorEnrollmentPolicyTypeL #-}
+
+-- | 'multifactorEnrollmentPolicySettings' Lens
+multifactorEnrollmentPolicySettingsL :: Lens_' MultifactorEnrollmentPolicy (Maybe MultifactorEnrollmentPolicySettings)
+multifactorEnrollmentPolicySettingsL f MultifactorEnrollmentPolicy{..} = (\multifactorEnrollmentPolicySettings -> MultifactorEnrollmentPolicy { multifactorEnrollmentPolicySettings, ..} ) <$> f multifactorEnrollmentPolicySettings
+{-# INLINE multifactorEnrollmentPolicySettingsL #-}
+
+
+
+-- * MultifactorEnrollmentPolicyAuthenticatorSettings
+
+-- | 'multifactorEnrollmentPolicyAuthenticatorSettingsConstraints' Lens
+multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsL :: Lens_' MultifactorEnrollmentPolicyAuthenticatorSettings (Maybe MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints)
+multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsL f MultifactorEnrollmentPolicyAuthenticatorSettings{..} = (\multifactorEnrollmentPolicyAuthenticatorSettingsConstraints -> MultifactorEnrollmentPolicyAuthenticatorSettings { multifactorEnrollmentPolicyAuthenticatorSettingsConstraints, ..} ) <$> f multifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+{-# INLINE multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsL #-}
+
+-- | 'multifactorEnrollmentPolicyAuthenticatorSettingsEnroll' Lens
+multifactorEnrollmentPolicyAuthenticatorSettingsEnrollL :: Lens_' MultifactorEnrollmentPolicyAuthenticatorSettings (Maybe MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll)
+multifactorEnrollmentPolicyAuthenticatorSettingsEnrollL f MultifactorEnrollmentPolicyAuthenticatorSettings{..} = (\multifactorEnrollmentPolicyAuthenticatorSettingsEnroll -> MultifactorEnrollmentPolicyAuthenticatorSettings { multifactorEnrollmentPolicyAuthenticatorSettingsEnroll, ..} ) <$> f multifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+{-# INLINE multifactorEnrollmentPolicyAuthenticatorSettingsEnrollL #-}
+
+-- | 'multifactorEnrollmentPolicyAuthenticatorSettingsKey' Lens
+multifactorEnrollmentPolicyAuthenticatorSettingsKeyL :: Lens_' MultifactorEnrollmentPolicyAuthenticatorSettings (Maybe MultifactorEnrollmentPolicyAuthenticatorType)
+multifactorEnrollmentPolicyAuthenticatorSettingsKeyL f MultifactorEnrollmentPolicyAuthenticatorSettings{..} = (\multifactorEnrollmentPolicyAuthenticatorSettingsKey -> MultifactorEnrollmentPolicyAuthenticatorSettings { multifactorEnrollmentPolicyAuthenticatorSettingsKey, ..} ) <$> f multifactorEnrollmentPolicyAuthenticatorSettingsKey
+{-# INLINE multifactorEnrollmentPolicyAuthenticatorSettingsKeyL #-}
+
+
+
+-- * MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+
+-- | 'multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups' Lens
+multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroupsL :: Lens_' MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints (Maybe [Text])
+multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroupsL f MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints{..} = (\multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups -> MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints { multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups, ..} ) <$> f multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups
+{-# INLINE multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroupsL #-}
+
+
+
+-- * MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+
+-- | 'multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf' Lens
+multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelfL :: Lens_' MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll (Maybe MultifactorEnrollmentPolicyAuthenticatorStatus)
+multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelfL f MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll{..} = (\multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf -> MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll { multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf, ..} ) <$> f multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf
+{-# INLINE multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelfL #-}
+
+
+
+-- * MultifactorEnrollmentPolicyAuthenticatorStatus
+
+
+
+-- * MultifactorEnrollmentPolicyAuthenticatorType
+
+
+
+-- * MultifactorEnrollmentPolicySettings
+
+-- | 'multifactorEnrollmentPolicySettingsAuthenticators' Lens
+multifactorEnrollmentPolicySettingsAuthenticatorsL :: Lens_' MultifactorEnrollmentPolicySettings (Maybe [MultifactorEnrollmentPolicyAuthenticatorSettings])
+multifactorEnrollmentPolicySettingsAuthenticatorsL f MultifactorEnrollmentPolicySettings{..} = (\multifactorEnrollmentPolicySettingsAuthenticators -> MultifactorEnrollmentPolicySettings { multifactorEnrollmentPolicySettingsAuthenticators, ..} ) <$> f multifactorEnrollmentPolicySettingsAuthenticators
+{-# INLINE multifactorEnrollmentPolicySettingsAuthenticatorsL #-}
+
+-- | 'multifactorEnrollmentPolicySettingsType' Lens
+multifactorEnrollmentPolicySettingsTypeL :: Lens_' MultifactorEnrollmentPolicySettings (Maybe MultifactorEnrollmentPolicySettingsType)
+multifactorEnrollmentPolicySettingsTypeL f MultifactorEnrollmentPolicySettings{..} = (\multifactorEnrollmentPolicySettingsType -> MultifactorEnrollmentPolicySettings { multifactorEnrollmentPolicySettingsType, ..} ) <$> f multifactorEnrollmentPolicySettingsType
+{-# INLINE multifactorEnrollmentPolicySettingsTypeL #-}
+
+
+
+-- * MultifactorEnrollmentPolicySettingsType
+
+
+
 -- * NetworkZone
 
 -- | 'networkZoneType' Lens
@@ -5897,6 +6126,109 @@ preRegistrationInlineHookInlineHookIdL f PreRegistrationInlineHook{..} = (\preRe
 
 
 
+-- * PreviewSAMLAppMetadata200Response
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptor' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorL :: Lens_' PreviewSAMLAppMetadata200Response (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptor)
+previewSAMLAppMetadata200ResponseEntityDescriptorL f PreviewSAMLAppMetadata200Response{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptor -> PreviewSAMLAppMetadata200Response { previewSAMLAppMetadata200ResponseEntityDescriptor, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptor
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorL #-}
+
+
+
+-- * PreviewSAMLAppMetadata200ResponseEntityDescriptor
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorEntityId' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorEntityIdL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptor (Maybe Text)
+previewSAMLAppMetadata200ResponseEntityDescriptorEntityIdL f PreviewSAMLAppMetadata200ResponseEntityDescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorEntityId -> PreviewSAMLAppMetadata200ResponseEntityDescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorEntityId, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorEntityId
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorEntityIdL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptorL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptor (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor)
+previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptorL f PreviewSAMLAppMetadata200ResponseEntityDescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor -> PreviewSAMLAppMetadata200ResponseEntityDescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptorL #-}
+
+
+
+-- * PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSignedL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor (Maybe Bool)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSignedL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSignedL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumerationL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor (Maybe Text)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumerationL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumerationL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormatL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor (Maybe [Text])
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormatL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormatL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutServiceL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutServiceL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutServiceL #-}
+
+
+
+-- * PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUseL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor (Maybe Text)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUseL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUseL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoL #-}
+
+
+
+-- * PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo (Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataL #-}
+
+
+
+-- * PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509CertificateL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data (Maybe Text)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509CertificateL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509CertificateL #-}
+
+
+
+-- * PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBindingL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService (Maybe Text)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBindingL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBindingL #-}
+
+-- | 'previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation' Lens
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocationL :: Lens_' PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService (Maybe Text)
+previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocationL f PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService{..} = (\previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation -> PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation, ..} ) <$> f previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation
+{-# INLINE previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocationL #-}
+
+
+
 -- * ProfileEnrollmentPolicyRule
 
 -- | 'profileEnrollmentPolicyRuleActions' Lens
@@ -5942,6 +6274,11 @@ profileEnrollmentPolicyRuleActionTargetGroupIdsL f ProfileEnrollmentPolicyRuleAc
 profileEnrollmentPolicyRuleActionUnknownUserActionL :: Lens_' ProfileEnrollmentPolicyRuleAction (Maybe Text)
 profileEnrollmentPolicyRuleActionUnknownUserActionL f ProfileEnrollmentPolicyRuleAction{..} = (\profileEnrollmentPolicyRuleActionUnknownUserAction -> ProfileEnrollmentPolicyRuleAction { profileEnrollmentPolicyRuleActionUnknownUserAction, ..} ) <$> f profileEnrollmentPolicyRuleActionUnknownUserAction
 {-# INLINE profileEnrollmentPolicyRuleActionUnknownUserActionL #-}
+
+-- | 'profileEnrollmentPolicyRuleActionUiSchemaId' Lens
+profileEnrollmentPolicyRuleActionUiSchemaIdL :: Lens_' ProfileEnrollmentPolicyRuleAction (Maybe Text)
+profileEnrollmentPolicyRuleActionUiSchemaIdL f ProfileEnrollmentPolicyRuleAction{..} = (\profileEnrollmentPolicyRuleActionUiSchemaId -> ProfileEnrollmentPolicyRuleAction { profileEnrollmentPolicyRuleActionUiSchemaId, ..} ) <$> f profileEnrollmentPolicyRuleActionUiSchemaId
+{-# INLINE profileEnrollmentPolicyRuleActionUiSchemaIdL #-}
 
 
 
@@ -6645,6 +6982,11 @@ samlApplicationSettingsSignOnRequestCompressedL f SamlApplicationSettingsSignOn{
 samlApplicationSettingsSignOnResponseSignedL :: Lens_' SamlApplicationSettingsSignOn (Maybe Bool)
 samlApplicationSettingsSignOnResponseSignedL f SamlApplicationSettingsSignOn{..} = (\samlApplicationSettingsSignOnResponseSigned -> SamlApplicationSettingsSignOn { samlApplicationSettingsSignOnResponseSigned, ..} ) <$> f samlApplicationSettingsSignOnResponseSigned
 {-# INLINE samlApplicationSettingsSignOnResponseSignedL #-}
+
+-- | 'samlApplicationSettingsSignOnSamlSignedRequestEnabled' Lens
+samlApplicationSettingsSignOnSamlSignedRequestEnabledL :: Lens_' SamlApplicationSettingsSignOn (Maybe Bool)
+samlApplicationSettingsSignOnSamlSignedRequestEnabledL f SamlApplicationSettingsSignOn{..} = (\samlApplicationSettingsSignOnSamlSignedRequestEnabled -> SamlApplicationSettingsSignOn { samlApplicationSettingsSignOnSamlSignedRequestEnabled, ..} ) <$> f samlApplicationSettingsSignOnSamlSignedRequestEnabled
+{-# INLINE samlApplicationSettingsSignOnSamlSignedRequestEnabledL #-}
 
 -- | 'samlApplicationSettingsSignOnSignatureAlgorithm' Lens
 samlApplicationSettingsSignOnSignatureAlgorithmL :: Lens_' SamlApplicationSettingsSignOn (Maybe Text)
@@ -8616,6 +8958,11 @@ verificationMethodReauthenticateInL f VerificationMethod{..} = (\verificationMet
 verificationMethodConstraintsL :: Lens_' VerificationMethod (Maybe [AccessPolicyConstraints])
 verificationMethodConstraintsL f VerificationMethod{..} = (\verificationMethodConstraints -> VerificationMethod { verificationMethodConstraints, ..} ) <$> f verificationMethodConstraints
 {-# INLINE verificationMethodConstraintsL #-}
+
+-- | 'verificationMethodInactivityPeriod' Lens
+verificationMethodInactivityPeriodL :: Lens_' VerificationMethod (Maybe Text)
+verificationMethodInactivityPeriodL f VerificationMethod{..} = (\verificationMethodInactivityPeriod -> VerificationMethod { verificationMethodInactivityPeriod, ..} ) <$> f verificationMethodInactivityPeriod
+{-# INLINE verificationMethodInactivityPeriodL #-}
 
 
 

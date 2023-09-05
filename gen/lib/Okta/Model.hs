@@ -160,6 +160,9 @@ newtype InlineHookId = InlineHookId { unInlineHookId :: Text } deriving (P.Eq, P
 -- ** KeyId
 newtype KeyId = KeyId { unKeyId :: Text } deriving (P.Eq, P.Show)
 
+-- ** Kid
+newtype Kid = Kid { unKid :: Text } deriving (P.Eq, P.Show)
+
 -- ** Lifecycle
 newtype Lifecycle = Lifecycle { unLifecycle :: Text } deriving (P.Eq, P.Show)
 
@@ -240,6 +243,9 @@ newtype ScopeId = ScopeId { unScopeId :: Text } deriving (P.Eq, P.Show)
 
 -- ** Search
 newtype Search = Search { unSearch :: Text } deriving (P.Eq, P.Show)
+
+-- ** SecretId
+newtype SecretId = SecretId { unSecretId :: Text } deriving (P.Eq, P.Show)
 
 -- ** SendEmail
 newtype SendEmail = SendEmail { unSendEmail :: Bool } deriving (P.Eq, P.Show)
@@ -1098,6 +1104,7 @@ data ApplicationCredentialsOAuthClient = ApplicationCredentialsOAuthClient
   { applicationCredentialsOAuthClientAutoKeyRotation :: !(Maybe Bool) -- ^ "autoKeyRotation"
   , applicationCredentialsOAuthClientClientId :: !(Maybe Text) -- ^ "client_id"
   , applicationCredentialsOAuthClientClientSecret :: !(Maybe Text) -- ^ "client_secret"
+  , applicationCredentialsOAuthClientPkceRequired :: !(Maybe Bool) -- ^ "pkce_required"
   , applicationCredentialsOAuthClientTokenEndpointAuthMethod :: !(Maybe OAuthEndpointAuthenticationMethod) -- ^ "token_endpoint_auth_method"
   } deriving (P.Show, P.Eq, P.Typeable)
 
@@ -1108,6 +1115,7 @@ instance A.FromJSON ApplicationCredentialsOAuthClient where
       <$> (o .:? "autoKeyRotation")
       <*> (o .:? "client_id")
       <*> (o .:? "client_secret")
+      <*> (o .:? "pkce_required")
       <*> (o .:? "token_endpoint_auth_method")
 
 -- | ToJSON ApplicationCredentialsOAuthClient
@@ -1117,6 +1125,7 @@ instance A.ToJSON ApplicationCredentialsOAuthClient where
       [ "autoKeyRotation" .= applicationCredentialsOAuthClientAutoKeyRotation
       , "client_id" .= applicationCredentialsOAuthClientClientId
       , "client_secret" .= applicationCredentialsOAuthClientClientSecret
+      , "pkce_required" .= applicationCredentialsOAuthClientPkceRequired
       , "token_endpoint_auth_method" .= applicationCredentialsOAuthClientTokenEndpointAuthMethod
       ]
 
@@ -1129,6 +1138,7 @@ mkApplicationCredentialsOAuthClient =
   { applicationCredentialsOAuthClientAutoKeyRotation = Nothing
   , applicationCredentialsOAuthClientClientId = Nothing
   , applicationCredentialsOAuthClientClientSecret = Nothing
+  , applicationCredentialsOAuthClientPkceRequired = Nothing
   , applicationCredentialsOAuthClientTokenEndpointAuthMethod = Nothing
   }
 
@@ -1339,7 +1349,7 @@ mkApplicationLicensing =
 -- ** ApplicationSettings
 -- | ApplicationSettings
 data ApplicationSettings = ApplicationSettings
-  { applicationSettingsApp :: !(Maybe A.Value) -- ^ "app"
+  { applicationSettingsApp :: !(Maybe ApplicationSettingsApplication) -- ^ "app"
   , applicationSettingsImplicitAssignment :: !(Maybe Bool) -- ^ "implicitAssignment"
   , applicationSettingsInlineHookId :: !(Maybe Text) -- ^ "inlineHookId"
   , applicationSettingsNotifications :: !(Maybe ApplicationSettingsNotifications) -- ^ "notifications"
@@ -1378,6 +1388,58 @@ mkApplicationSettings =
   , applicationSettingsInlineHookId = Nothing
   , applicationSettingsNotifications = Nothing
   , applicationSettingsNotes = Nothing
+  }
+
+-- ** ApplicationSettingsApplication
+-- | ApplicationSettingsApplication
+data ApplicationSettingsApplication = ApplicationSettingsApplication
+  { applicationSettingsApplicationOrgName :: !(Maybe Text) -- ^ "orgName"
+  , applicationSettingsApplicationUrl :: !(Maybe Text) -- ^ "url"
+  , applicationSettingsApplicationAcsUrl :: !(Maybe Text) -- ^ "acsUrl"
+  , applicationSettingsApplicationButtonField :: !(Maybe Text) -- ^ "buttonField"
+  , applicationSettingsApplicationPasswordField :: !(Maybe Text) -- ^ "passwordField"
+  , applicationSettingsApplicationUsernameField :: !(Maybe Text) -- ^ "usernameField"
+  , applicationSettingsApplicationLoginUrlRegex :: !(Maybe Text) -- ^ "loginUrlRegex"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON ApplicationSettingsApplication
+instance A.FromJSON ApplicationSettingsApplication where
+  parseJSON = A.withObject "ApplicationSettingsApplication" $ \o ->
+    ApplicationSettingsApplication
+      <$> (o .:? "orgName")
+      <*> (o .:? "url")
+      <*> (o .:? "acsUrl")
+      <*> (o .:? "buttonField")
+      <*> (o .:? "passwordField")
+      <*> (o .:? "usernameField")
+      <*> (o .:? "loginUrlRegex")
+
+-- | ToJSON ApplicationSettingsApplication
+instance A.ToJSON ApplicationSettingsApplication where
+  toJSON ApplicationSettingsApplication {..} =
+   _omitNulls
+      [ "orgName" .= applicationSettingsApplicationOrgName
+      , "url" .= applicationSettingsApplicationUrl
+      , "acsUrl" .= applicationSettingsApplicationAcsUrl
+      , "buttonField" .= applicationSettingsApplicationButtonField
+      , "passwordField" .= applicationSettingsApplicationPasswordField
+      , "usernameField" .= applicationSettingsApplicationUsernameField
+      , "loginUrlRegex" .= applicationSettingsApplicationLoginUrlRegex
+      ]
+
+
+-- | Construct a value of type 'ApplicationSettingsApplication' (by applying it's required fields, if any)
+mkApplicationSettingsApplication
+  :: ApplicationSettingsApplication
+mkApplicationSettingsApplication =
+  ApplicationSettingsApplication
+  { applicationSettingsApplicationOrgName = Nothing
+  , applicationSettingsApplicationUrl = Nothing
+  , applicationSettingsApplicationAcsUrl = Nothing
+  , applicationSettingsApplicationButtonField = Nothing
+  , applicationSettingsApplicationPasswordField = Nothing
+  , applicationSettingsApplicationUsernameField = Nothing
+  , applicationSettingsApplicationLoginUrlRegex = Nothing
   }
 
 -- ** ApplicationSettingsNotes
@@ -1879,6 +1941,7 @@ data AuthorizationServer = AuthorizationServer
   , authorizationServerAudiences :: !(Maybe [Text]) -- ^ "audiences"
   , authorizationServerCreated :: !(Maybe DateTime) -- ^ /ReadOnly/ "created"
   , authorizationServerCredentials :: !(Maybe AuthorizationServerCredentials) -- ^ "credentials"
+  , authorizationServerDefault :: !(Maybe Bool) -- ^ /ReadOnly/ "default"
   , authorizationServerDescription :: !(Maybe Text) -- ^ "description"
   , authorizationServerId :: !(Maybe Text) -- ^ /ReadOnly/ "id"
   , authorizationServerIssuer :: !(Maybe Text) -- ^ "issuer"
@@ -1896,6 +1959,7 @@ instance A.FromJSON AuthorizationServer where
       <*> (o .:? "audiences")
       <*> (o .:? "created")
       <*> (o .:? "credentials")
+      <*> (o .:? "default")
       <*> (o .:? "description")
       <*> (o .:? "id")
       <*> (o .:? "issuer")
@@ -1912,6 +1976,7 @@ instance A.ToJSON AuthorizationServer where
       , "audiences" .= authorizationServerAudiences
       , "created" .= authorizationServerCreated
       , "credentials" .= authorizationServerCredentials
+      , "default" .= authorizationServerDefault
       , "description" .= authorizationServerDescription
       , "id" .= authorizationServerId
       , "issuer" .= authorizationServerIssuer
@@ -1931,6 +1996,7 @@ mkAuthorizationServer =
   , authorizationServerAudiences = Nothing
   , authorizationServerCreated = Nothing
   , authorizationServerCredentials = Nothing
+  , authorizationServerDefault = Nothing
   , authorizationServerDescription = Nothing
   , authorizationServerId = Nothing
   , authorizationServerIssuer = Nothing
@@ -2918,6 +2984,86 @@ mkClientPolicyCondition
 mkClientPolicyCondition =
   ClientPolicyCondition
   { clientPolicyConditionInclude = Nothing
+  }
+
+-- ** ClientSecret
+-- | ClientSecret
+data ClientSecret = ClientSecret
+  { clientSecretId :: !(Maybe Text) -- ^ "id"
+  , clientSecretClientSecret :: !(Maybe Text) -- ^ "client_secret"
+  , clientSecretSecretHash :: !(Maybe Text) -- ^ "secret_hash"
+  , clientSecretCreated :: !(Maybe DateTime) -- ^ /ReadOnly/ "created"
+  , clientSecretLastUpdated :: !(Maybe DateTime) -- ^ /ReadOnly/ "lastUpdated"
+  , clientSecretStatus :: !(Maybe E'Status2) -- ^ "status"
+  , clientSecretLinks :: !(Maybe (Map.Map String A.Value)) -- ^ /ReadOnly/ "_links"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON ClientSecret
+instance A.FromJSON ClientSecret where
+  parseJSON = A.withObject "ClientSecret" $ \o ->
+    ClientSecret
+      <$> (o .:? "id")
+      <*> (o .:? "client_secret")
+      <*> (o .:? "secret_hash")
+      <*> (o .:? "created")
+      <*> (o .:? "lastUpdated")
+      <*> (o .:? "status")
+      <*> (o .:? "_links")
+
+-- | ToJSON ClientSecret
+instance A.ToJSON ClientSecret where
+  toJSON ClientSecret {..} =
+   _omitNulls
+      [ "id" .= clientSecretId
+      , "client_secret" .= clientSecretClientSecret
+      , "secret_hash" .= clientSecretSecretHash
+      , "created" .= clientSecretCreated
+      , "lastUpdated" .= clientSecretLastUpdated
+      , "status" .= clientSecretStatus
+      , "_links" .= clientSecretLinks
+      ]
+
+
+-- | Construct a value of type 'ClientSecret' (by applying it's required fields, if any)
+mkClientSecret
+  :: ClientSecret
+mkClientSecret =
+  ClientSecret
+  { clientSecretId = Nothing
+  , clientSecretClientSecret = Nothing
+  , clientSecretSecretHash = Nothing
+  , clientSecretCreated = Nothing
+  , clientSecretLastUpdated = Nothing
+  , clientSecretStatus = Nothing
+  , clientSecretLinks = Nothing
+  }
+
+-- ** ClientSecretMetadata
+-- | ClientSecretMetadata
+data ClientSecretMetadata = ClientSecretMetadata
+  { clientSecretMetadataClientSecret :: !(Maybe Text) -- ^ "client_secret"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON ClientSecretMetadata
+instance A.FromJSON ClientSecretMetadata where
+  parseJSON = A.withObject "ClientSecretMetadata" $ \o ->
+    ClientSecretMetadata
+      <$> (o .:? "client_secret")
+
+-- | ToJSON ClientSecretMetadata
+instance A.ToJSON ClientSecretMetadata where
+  toJSON ClientSecretMetadata {..} =
+   _omitNulls
+      [ "client_secret" .= clientSecretMetadataClientSecret
+      ]
+
+
+-- | Construct a value of type 'ClientSecretMetadata' (by applying it's required fields, if any)
+mkClientSecretMetadata
+  :: ClientSecretMetadata
+mkClientSecretMetadata =
+  ClientSecretMetadata
+  { clientSecretMetadataClientSecret = Nothing
   }
 
 -- ** Compliance
@@ -6820,6 +6966,206 @@ mkMDMEnrollmentPolicyRuleCondition =
   , mDMEnrollmentPolicyRuleConditionEnrollment = Nothing
   }
 
+-- ** MultifactorEnrollmentPolicy
+-- | MultifactorEnrollmentPolicy
+data MultifactorEnrollmentPolicy = MultifactorEnrollmentPolicy
+  { multifactorEnrollmentPolicyEmbedded :: !(Maybe (Map.Map String A.Value)) -- ^ /ReadOnly/ "_embedded"
+  , multifactorEnrollmentPolicyLinks :: !(Maybe (Map.Map String A.Value)) -- ^ /ReadOnly/ "_links"
+  , multifactorEnrollmentPolicyConditions :: !(Maybe PolicyRuleConditions) -- ^ "conditions"
+  , multifactorEnrollmentPolicyCreated :: !(Maybe DateTime) -- ^ /ReadOnly/ "created"
+  , multifactorEnrollmentPolicyDescription :: !(Maybe Text) -- ^ "description"
+  , multifactorEnrollmentPolicyId :: !(Maybe Text) -- ^ /ReadOnly/ "id"
+  , multifactorEnrollmentPolicyLastUpdated :: !(Maybe DateTime) -- ^ /ReadOnly/ "lastUpdated"
+  , multifactorEnrollmentPolicyName :: !(Maybe Text) -- ^ "name"
+  , multifactorEnrollmentPolicyPriority :: !(Maybe Int) -- ^ "priority"
+  , multifactorEnrollmentPolicyStatus :: !(Maybe E'Status2) -- ^ "status"
+  , multifactorEnrollmentPolicySystem :: !(Maybe Bool) -- ^ "system"
+  , multifactorEnrollmentPolicyType :: !(Maybe PolicyType) -- ^ "type"
+  , multifactorEnrollmentPolicySettings :: !(Maybe MultifactorEnrollmentPolicySettings) -- ^ "settings"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON MultifactorEnrollmentPolicy
+instance A.FromJSON MultifactorEnrollmentPolicy where
+  parseJSON = A.withObject "MultifactorEnrollmentPolicy" $ \o ->
+    MultifactorEnrollmentPolicy
+      <$> (o .:? "_embedded")
+      <*> (o .:? "_links")
+      <*> (o .:? "conditions")
+      <*> (o .:? "created")
+      <*> (o .:? "description")
+      <*> (o .:? "id")
+      <*> (o .:? "lastUpdated")
+      <*> (o .:? "name")
+      <*> (o .:? "priority")
+      <*> (o .:? "status")
+      <*> (o .:? "system")
+      <*> (o .:? "type")
+      <*> (o .:? "settings")
+
+-- | ToJSON MultifactorEnrollmentPolicy
+instance A.ToJSON MultifactorEnrollmentPolicy where
+  toJSON MultifactorEnrollmentPolicy {..} =
+   _omitNulls
+      [ "_embedded" .= multifactorEnrollmentPolicyEmbedded
+      , "_links" .= multifactorEnrollmentPolicyLinks
+      , "conditions" .= multifactorEnrollmentPolicyConditions
+      , "created" .= multifactorEnrollmentPolicyCreated
+      , "description" .= multifactorEnrollmentPolicyDescription
+      , "id" .= multifactorEnrollmentPolicyId
+      , "lastUpdated" .= multifactorEnrollmentPolicyLastUpdated
+      , "name" .= multifactorEnrollmentPolicyName
+      , "priority" .= multifactorEnrollmentPolicyPriority
+      , "status" .= multifactorEnrollmentPolicyStatus
+      , "system" .= multifactorEnrollmentPolicySystem
+      , "type" .= multifactorEnrollmentPolicyType
+      , "settings" .= multifactorEnrollmentPolicySettings
+      ]
+
+
+-- | Construct a value of type 'MultifactorEnrollmentPolicy' (by applying it's required fields, if any)
+mkMultifactorEnrollmentPolicy
+  :: MultifactorEnrollmentPolicy
+mkMultifactorEnrollmentPolicy =
+  MultifactorEnrollmentPolicy
+  { multifactorEnrollmentPolicyEmbedded = Nothing
+  , multifactorEnrollmentPolicyLinks = Nothing
+  , multifactorEnrollmentPolicyConditions = Nothing
+  , multifactorEnrollmentPolicyCreated = Nothing
+  , multifactorEnrollmentPolicyDescription = Nothing
+  , multifactorEnrollmentPolicyId = Nothing
+  , multifactorEnrollmentPolicyLastUpdated = Nothing
+  , multifactorEnrollmentPolicyName = Nothing
+  , multifactorEnrollmentPolicyPriority = Nothing
+  , multifactorEnrollmentPolicyStatus = Nothing
+  , multifactorEnrollmentPolicySystem = Nothing
+  , multifactorEnrollmentPolicyType = Nothing
+  , multifactorEnrollmentPolicySettings = Nothing
+  }
+
+-- ** MultifactorEnrollmentPolicyAuthenticatorSettings
+-- | MultifactorEnrollmentPolicyAuthenticatorSettings
+data MultifactorEnrollmentPolicyAuthenticatorSettings = MultifactorEnrollmentPolicyAuthenticatorSettings
+  { multifactorEnrollmentPolicyAuthenticatorSettingsConstraints :: !(Maybe MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints) -- ^ "constraints"
+  , multifactorEnrollmentPolicyAuthenticatorSettingsEnroll :: !(Maybe MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll) -- ^ "enroll"
+  , multifactorEnrollmentPolicyAuthenticatorSettingsKey :: !(Maybe MultifactorEnrollmentPolicyAuthenticatorType) -- ^ "key"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON MultifactorEnrollmentPolicyAuthenticatorSettings
+instance A.FromJSON MultifactorEnrollmentPolicyAuthenticatorSettings where
+  parseJSON = A.withObject "MultifactorEnrollmentPolicyAuthenticatorSettings" $ \o ->
+    MultifactorEnrollmentPolicyAuthenticatorSettings
+      <$> (o .:? "constraints")
+      <*> (o .:? "enroll")
+      <*> (o .:? "key")
+
+-- | ToJSON MultifactorEnrollmentPolicyAuthenticatorSettings
+instance A.ToJSON MultifactorEnrollmentPolicyAuthenticatorSettings where
+  toJSON MultifactorEnrollmentPolicyAuthenticatorSettings {..} =
+   _omitNulls
+      [ "constraints" .= multifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+      , "enroll" .= multifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+      , "key" .= multifactorEnrollmentPolicyAuthenticatorSettingsKey
+      ]
+
+
+-- | Construct a value of type 'MultifactorEnrollmentPolicyAuthenticatorSettings' (by applying it's required fields, if any)
+mkMultifactorEnrollmentPolicyAuthenticatorSettings
+  :: MultifactorEnrollmentPolicyAuthenticatorSettings
+mkMultifactorEnrollmentPolicyAuthenticatorSettings =
+  MultifactorEnrollmentPolicyAuthenticatorSettings
+  { multifactorEnrollmentPolicyAuthenticatorSettingsConstraints = Nothing
+  , multifactorEnrollmentPolicyAuthenticatorSettingsEnroll = Nothing
+  , multifactorEnrollmentPolicyAuthenticatorSettingsKey = Nothing
+  }
+
+-- ** MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+-- | MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+data MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints = MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+  { multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups :: !(Maybe [Text]) -- ^ "aaguidGroups"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+instance A.FromJSON MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints where
+  parseJSON = A.withObject "MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints" $ \o ->
+    MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+      <$> (o .:? "aaguidGroups")
+
+-- | ToJSON MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+instance A.ToJSON MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints where
+  toJSON MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints {..} =
+   _omitNulls
+      [ "aaguidGroups" .= multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups
+      ]
+
+
+-- | Construct a value of type 'MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints' (by applying it's required fields, if any)
+mkMultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+  :: MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+mkMultifactorEnrollmentPolicyAuthenticatorSettingsConstraints =
+  MultifactorEnrollmentPolicyAuthenticatorSettingsConstraints
+  { multifactorEnrollmentPolicyAuthenticatorSettingsConstraintsAaguidGroups = Nothing
+  }
+
+-- ** MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+-- | MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+data MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll = MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+  { multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf :: !(Maybe MultifactorEnrollmentPolicyAuthenticatorStatus) -- ^ "self"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+instance A.FromJSON MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll where
+  parseJSON = A.withObject "MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll" $ \o ->
+    MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+      <$> (o .:? "self")
+
+-- | ToJSON MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+instance A.ToJSON MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll where
+  toJSON MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll {..} =
+   _omitNulls
+      [ "self" .= multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf
+      ]
+
+
+-- | Construct a value of type 'MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll' (by applying it's required fields, if any)
+mkMultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+  :: MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+mkMultifactorEnrollmentPolicyAuthenticatorSettingsEnroll =
+  MultifactorEnrollmentPolicyAuthenticatorSettingsEnroll
+  { multifactorEnrollmentPolicyAuthenticatorSettingsEnrollSelf = Nothing
+  }
+
+-- ** MultifactorEnrollmentPolicySettings
+-- | MultifactorEnrollmentPolicySettings
+data MultifactorEnrollmentPolicySettings = MultifactorEnrollmentPolicySettings
+  { multifactorEnrollmentPolicySettingsAuthenticators :: !(Maybe [MultifactorEnrollmentPolicyAuthenticatorSettings]) -- ^ "authenticators"
+  , multifactorEnrollmentPolicySettingsType :: !(Maybe MultifactorEnrollmentPolicySettingsType) -- ^ "type"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON MultifactorEnrollmentPolicySettings
+instance A.FromJSON MultifactorEnrollmentPolicySettings where
+  parseJSON = A.withObject "MultifactorEnrollmentPolicySettings" $ \o ->
+    MultifactorEnrollmentPolicySettings
+      <$> (o .:? "authenticators")
+      <*> (o .:? "type")
+
+-- | ToJSON MultifactorEnrollmentPolicySettings
+instance A.ToJSON MultifactorEnrollmentPolicySettings where
+  toJSON MultifactorEnrollmentPolicySettings {..} =
+   _omitNulls
+      [ "authenticators" .= multifactorEnrollmentPolicySettingsAuthenticators
+      , "type" .= multifactorEnrollmentPolicySettingsType
+      ]
+
+
+-- | Construct a value of type 'MultifactorEnrollmentPolicySettings' (by applying it's required fields, if any)
+mkMultifactorEnrollmentPolicySettings
+  :: MultifactorEnrollmentPolicySettings
+mkMultifactorEnrollmentPolicySettings =
+  MultifactorEnrollmentPolicySettings
+  { multifactorEnrollmentPolicySettingsAuthenticators = Nothing
+  , multifactorEnrollmentPolicySettingsType = Nothing
+  }
+
 -- ** NetworkZone
 -- | NetworkZone
 data NetworkZone = NetworkZone
@@ -10072,6 +10418,234 @@ mkPreRegistrationInlineHook =
   { preRegistrationInlineHookInlineHookId = Nothing
   }
 
+-- ** PreviewSAMLAppMetadata200Response
+-- | PreviewSAMLAppMetadata200Response
+data PreviewSAMLAppMetadata200Response = PreviewSAMLAppMetadata200Response
+  { previewSAMLAppMetadata200ResponseEntityDescriptor :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptor) -- ^ "EntityDescriptor"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200Response
+instance A.FromJSON PreviewSAMLAppMetadata200Response where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200Response" $ \o ->
+    PreviewSAMLAppMetadata200Response
+      <$> (o .:? "EntityDescriptor")
+
+-- | ToJSON PreviewSAMLAppMetadata200Response
+instance A.ToJSON PreviewSAMLAppMetadata200Response where
+  toJSON PreviewSAMLAppMetadata200Response {..} =
+   _omitNulls
+      [ "EntityDescriptor" .= previewSAMLAppMetadata200ResponseEntityDescriptor
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200Response' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200Response
+  :: PreviewSAMLAppMetadata200Response
+mkPreviewSAMLAppMetadata200Response =
+  PreviewSAMLAppMetadata200Response
+  { previewSAMLAppMetadata200ResponseEntityDescriptor = Nothing
+  }
+
+-- ** PreviewSAMLAppMetadata200ResponseEntityDescriptor
+-- | PreviewSAMLAppMetadata200ResponseEntityDescriptor
+data PreviewSAMLAppMetadata200ResponseEntityDescriptor = PreviewSAMLAppMetadata200ResponseEntityDescriptor
+  { previewSAMLAppMetadata200ResponseEntityDescriptorEntityId :: !(Maybe Text) -- ^ "entityID"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor) -- ^ "IDPSSODescriptor"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptor
+instance A.FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptor where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200ResponseEntityDescriptor" $ \o ->
+    PreviewSAMLAppMetadata200ResponseEntityDescriptor
+      <$> (o .:? "entityID")
+      <*> (o .:? "IDPSSODescriptor")
+
+-- | ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptor
+instance A.ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptor where
+  toJSON PreviewSAMLAppMetadata200ResponseEntityDescriptor {..} =
+   _omitNulls
+      [ "entityID" .= previewSAMLAppMetadata200ResponseEntityDescriptorEntityId
+      , "IDPSSODescriptor" .= previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200ResponseEntityDescriptor' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptor
+  :: PreviewSAMLAppMetadata200ResponseEntityDescriptor
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptor =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptor
+  { previewSAMLAppMetadata200ResponseEntityDescriptorEntityId = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIdpssoDescriptor = Nothing
+  }
+
+-- ** PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+-- | PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+data PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor = PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned :: !(Maybe Bool) -- ^ "WantAuthnRequestsSigned"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration :: !(Maybe Text) -- ^ "protocolSupportEnumeration"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor) -- ^ "KeyDescriptor"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat :: !(Maybe [Text]) -- ^ "NameIDFormat"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService) -- ^ "SingleSignOnService"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService) -- ^ "SingleLogoutService"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+instance A.FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor" $ \o ->
+    PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+      <$> (o .:? "WantAuthnRequestsSigned")
+      <*> (o .:? "protocolSupportEnumeration")
+      <*> (o .:? "KeyDescriptor")
+      <*> (o .:? "NameIDFormat")
+      <*> (o .:? "SingleSignOnService")
+      <*> (o .:? "SingleLogoutService")
+
+-- | ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+instance A.ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor where
+  toJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor {..} =
+   _omitNulls
+      [ "WantAuthnRequestsSigned" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned
+      , "protocolSupportEnumeration" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration
+      , "KeyDescriptor" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+      , "NameIDFormat" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat
+      , "SingleSignOnService" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+      , "SingleLogoutService" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+  :: PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptor
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorWantAuthnRequestsSigned = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorProtocolSupportEnumeration = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorNameIdFormat = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleLogoutService = Nothing
+  }
+
+-- ** PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+-- | PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+data PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor = PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse :: !(Maybe Text) -- ^ "use"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo) -- ^ "KeyInfo"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+instance A.FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor" $ \o ->
+    PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+      <$> (o .:? "use")
+      <*> (o .:? "KeyInfo")
+
+-- | ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+instance A.ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor where
+  toJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor {..} =
+   _omitNulls
+      [ "use" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse
+      , "KeyInfo" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+  :: PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptor
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorUse = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo = Nothing
+  }
+
+-- ** PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+-- | PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+data PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo = PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data :: !(Maybe PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data) -- ^ "X509Data"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+instance A.FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo" $ \o ->
+    PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+      <$> (o .:? "X509Data")
+
+-- | ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+instance A.ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo where
+  toJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo {..} =
+   _omitNulls
+      [ "X509Data" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+  :: PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfo
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data = Nothing
+  }
+
+-- ** PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+-- | PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+data PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data = PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate :: !(Maybe Text) -- ^ "X509Certificate"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+instance A.FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data" $ \o ->
+    PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+      <$> (o .:? "X509Certificate")
+
+-- | ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+instance A.ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data where
+  toJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data {..} =
+   _omitNulls
+      [ "X509Certificate" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+  :: PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509Data
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorKeyDescriptorKeyInfoX509DataX509Certificate = Nothing
+  }
+
+-- ** PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+-- | PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+data PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService = PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding :: !(Maybe Text) -- ^ "Binding"
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation :: !(Maybe Text) -- ^ "Location"
+  } deriving (P.Show, P.Eq, P.Typeable)
+
+-- | FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+instance A.FromJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService where
+  parseJSON = A.withObject "PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService" $ \o ->
+    PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+      <$> (o .:? "Binding")
+      <*> (o .:? "Location")
+
+-- | ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+instance A.ToJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService where
+  toJSON PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService {..} =
+   _omitNulls
+      [ "Binding" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding
+      , "Location" .= previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation
+      ]
+
+
+-- | Construct a value of type 'PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService' (by applying it's required fields, if any)
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+  :: PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+mkPreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService =
+  PreviewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnService
+  { previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceBinding = Nothing
+  , previewSAMLAppMetadata200ResponseEntityDescriptorIDPSSODescriptorSingleSignOnServiceLocation = Nothing
+  }
+
 -- ** ProfileEnrollmentPolicyRule
 -- | ProfileEnrollmentPolicyRule
 data ProfileEnrollmentPolicyRule = ProfileEnrollmentPolicyRule
@@ -10113,6 +10687,7 @@ data ProfileEnrollmentPolicyRuleAction = ProfileEnrollmentPolicyRuleAction
   , profileEnrollmentPolicyRuleActionActivationRequirements :: !(Maybe ProfileEnrollmentPolicyRuleActivationRequirement) -- ^ "activationRequirements"
   , profileEnrollmentPolicyRuleActionTargetGroupIds :: !(Maybe [Text]) -- ^ "targetGroupIds"
   , profileEnrollmentPolicyRuleActionUnknownUserAction :: !(Maybe Text) -- ^ "unknownUserAction"
+  , profileEnrollmentPolicyRuleActionUiSchemaId :: !(Maybe Text) -- ^ "uiSchemaId"
   } deriving (P.Show, P.Eq, P.Typeable)
 
 -- | FromJSON ProfileEnrollmentPolicyRuleAction
@@ -10125,6 +10700,7 @@ instance A.FromJSON ProfileEnrollmentPolicyRuleAction where
       <*> (o .:? "activationRequirements")
       <*> (o .:? "targetGroupIds")
       <*> (o .:? "unknownUserAction")
+      <*> (o .:? "uiSchemaId")
 
 -- | ToJSON ProfileEnrollmentPolicyRuleAction
 instance A.ToJSON ProfileEnrollmentPolicyRuleAction where
@@ -10136,6 +10712,7 @@ instance A.ToJSON ProfileEnrollmentPolicyRuleAction where
       , "activationRequirements" .= profileEnrollmentPolicyRuleActionActivationRequirements
       , "targetGroupIds" .= profileEnrollmentPolicyRuleActionTargetGroupIds
       , "unknownUserAction" .= profileEnrollmentPolicyRuleActionUnknownUserAction
+      , "uiSchemaId" .= profileEnrollmentPolicyRuleActionUiSchemaId
       ]
 
 
@@ -10150,6 +10727,7 @@ mkProfileEnrollmentPolicyRuleAction =
   , profileEnrollmentPolicyRuleActionActivationRequirements = Nothing
   , profileEnrollmentPolicyRuleActionTargetGroupIds = Nothing
   , profileEnrollmentPolicyRuleActionUnknownUserAction = Nothing
+  , profileEnrollmentPolicyRuleActionUiSchemaId = Nothing
   }
 
 -- ** ProfileEnrollmentPolicyRuleActions
@@ -11349,6 +11927,7 @@ data SamlApplicationSettingsSignOn = SamlApplicationSettingsSignOn
   , samlApplicationSettingsSignOnRecipientOverride :: !(Maybe Text) -- ^ "recipientOverride"
   , samlApplicationSettingsSignOnRequestCompressed :: !(Maybe Bool) -- ^ "requestCompressed"
   , samlApplicationSettingsSignOnResponseSigned :: !(Maybe Bool) -- ^ "responseSigned"
+  , samlApplicationSettingsSignOnSamlSignedRequestEnabled :: !(Maybe Bool) -- ^ "samlSignedRequestEnabled"
   , samlApplicationSettingsSignOnSignatureAlgorithm :: !(Maybe Text) -- ^ "signatureAlgorithm"
   , samlApplicationSettingsSignOnSlo :: !(Maybe SingleLogout) -- ^ "slo"
   , samlApplicationSettingsSignOnSpIssuer :: !(Maybe Text) -- ^ "spIssuer"
@@ -11381,6 +11960,7 @@ instance A.FromJSON SamlApplicationSettingsSignOn where
       <*> (o .:? "recipientOverride")
       <*> (o .:? "requestCompressed")
       <*> (o .:? "responseSigned")
+      <*> (o .:? "samlSignedRequestEnabled")
       <*> (o .:? "signatureAlgorithm")
       <*> (o .:? "slo")
       <*> (o .:? "spIssuer")
@@ -11412,6 +11992,7 @@ instance A.ToJSON SamlApplicationSettingsSignOn where
       , "recipientOverride" .= samlApplicationSettingsSignOnRecipientOverride
       , "requestCompressed" .= samlApplicationSettingsSignOnRequestCompressed
       , "responseSigned" .= samlApplicationSettingsSignOnResponseSigned
+      , "samlSignedRequestEnabled" .= samlApplicationSettingsSignOnSamlSignedRequestEnabled
       , "signatureAlgorithm" .= samlApplicationSettingsSignOnSignatureAlgorithm
       , "slo" .= samlApplicationSettingsSignOnSlo
       , "spIssuer" .= samlApplicationSettingsSignOnSpIssuer
@@ -11446,6 +12027,7 @@ mkSamlApplicationSettingsSignOn =
   , samlApplicationSettingsSignOnRecipientOverride = Nothing
   , samlApplicationSettingsSignOnRequestCompressed = Nothing
   , samlApplicationSettingsSignOnResponseSigned = Nothing
+  , samlApplicationSettingsSignOnSamlSignedRequestEnabled = Nothing
   , samlApplicationSettingsSignOnSignatureAlgorithm = Nothing
   , samlApplicationSettingsSignOnSlo = Nothing
   , samlApplicationSettingsSignOnSpIssuer = Nothing
@@ -14417,6 +14999,7 @@ data VerificationMethod = VerificationMethod
   , verificationMethodType :: !(Maybe Text) -- ^ "type"
   , verificationMethodReauthenticateIn :: !(Maybe Text) -- ^ "reauthenticateIn"
   , verificationMethodConstraints :: !(Maybe [AccessPolicyConstraints]) -- ^ "constraints"
+  , verificationMethodInactivityPeriod :: !(Maybe Text) -- ^ "inactivityPeriod"
   } deriving (P.Show, P.Eq, P.Typeable)
 
 -- | FromJSON VerificationMethod
@@ -14427,6 +15010,7 @@ instance A.FromJSON VerificationMethod where
       <*> (o .:? "type")
       <*> (o .:? "reauthenticateIn")
       <*> (o .:? "constraints")
+      <*> (o .:? "inactivityPeriod")
 
 -- | ToJSON VerificationMethod
 instance A.ToJSON VerificationMethod where
@@ -14436,6 +15020,7 @@ instance A.ToJSON VerificationMethod where
       , "type" .= verificationMethodType
       , "reauthenticateIn" .= verificationMethodReauthenticateIn
       , "constraints" .= verificationMethodConstraints
+      , "inactivityPeriod" .= verificationMethodInactivityPeriod
       ]
 
 
@@ -14448,6 +15033,7 @@ mkVerificationMethod =
   , verificationMethodType = Nothing
   , verificationMethodReauthenticateIn = Nothing
   , verificationMethodConstraints = Nothing
+  , verificationMethodInactivityPeriod = Nothing
   }
 
 -- ** VerifyFactorRequest
@@ -15200,6 +15786,7 @@ toDNSRecordType = \case
 -- | Enum of 'Text'
 data DomainCertificateSourceType
   = DomainCertificateSourceType'MANUAL -- ^ @"MANUAL"@
+  | DomainCertificateSourceType'OKTA_MANAGED -- ^ @"OKTA_MANAGED"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
 instance A.ToJSON DomainCertificateSourceType where toJSON = A.toJSON . fromDomainCertificateSourceType
@@ -15212,11 +15799,13 @@ instance MimeRender MimeMultipartFormData DomainCertificateSourceType where mime
 fromDomainCertificateSourceType :: DomainCertificateSourceType -> Text
 fromDomainCertificateSourceType = \case
   DomainCertificateSourceType'MANUAL -> "MANUAL"
+  DomainCertificateSourceType'OKTA_MANAGED -> "OKTA_MANAGED"
 
 -- | parse 'DomainCertificateSourceType' enum
 toDomainCertificateSourceType :: Text -> P.Either String DomainCertificateSourceType
 toDomainCertificateSourceType = \case
   "MANUAL" -> P.Right DomainCertificateSourceType'MANUAL
+  "OKTA_MANAGED" -> P.Right DomainCertificateSourceType'OKTA_MANAGED
   s -> P.Left $ "toDomainCertificateSourceType: enum parse failure: " P.++ P.show s
 
 
@@ -15252,6 +15841,8 @@ data DomainValidationStatus
   = DomainValidationStatus'NOT_STARTED -- ^ @"NOT_STARTED"@
   | DomainValidationStatus'IN_PROGRESS -- ^ @"IN_PROGRESS"@
   | DomainValidationStatus'VERIFIED -- ^ @"VERIFIED"@
+  | DomainValidationStatus'FAILED_TO_VERIFY -- ^ @"FAILED_TO_VERIFY"@
+  | DomainValidationStatus'DOMAIN_TAKEN -- ^ @"DOMAIN_TAKEN"@
   | DomainValidationStatus'COMPLETED -- ^ @"COMPLETED"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
@@ -15267,6 +15858,8 @@ fromDomainValidationStatus = \case
   DomainValidationStatus'NOT_STARTED -> "NOT_STARTED"
   DomainValidationStatus'IN_PROGRESS -> "IN_PROGRESS"
   DomainValidationStatus'VERIFIED -> "VERIFIED"
+  DomainValidationStatus'FAILED_TO_VERIFY -> "FAILED_TO_VERIFY"
+  DomainValidationStatus'DOMAIN_TAKEN -> "DOMAIN_TAKEN"
   DomainValidationStatus'COMPLETED -> "COMPLETED"
 
 -- | parse 'DomainValidationStatus' enum
@@ -15275,6 +15868,8 @@ toDomainValidationStatus = \case
   "NOT_STARTED" -> P.Right DomainValidationStatus'NOT_STARTED
   "IN_PROGRESS" -> P.Right DomainValidationStatus'IN_PROGRESS
   "VERIFIED" -> P.Right DomainValidationStatus'VERIFIED
+  "FAILED_TO_VERIFY" -> P.Right DomainValidationStatus'FAILED_TO_VERIFY
+  "DOMAIN_TAKEN" -> P.Right DomainValidationStatus'DOMAIN_TAKEN
   "COMPLETED" -> P.Right DomainValidationStatus'COMPLETED
   s -> P.Left $ "toDomainValidationStatus: enum parse failure: " P.++ P.show s
 
@@ -15750,6 +16345,7 @@ toE'GroupFilterType = \case
 data E'IssuerMode
   = E'IssuerMode'ORG_URL -- ^ @"ORG_URL"@
   | E'IssuerMode'CUSTOM_URL -- ^ @"CUSTOM_URL"@
+  | E'IssuerMode'DYNAMIC -- ^ @"DYNAMIC"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
 instance A.ToJSON E'IssuerMode where toJSON = A.toJSON . fromE'IssuerMode
@@ -15763,12 +16359,14 @@ fromE'IssuerMode :: E'IssuerMode -> Text
 fromE'IssuerMode = \case
   E'IssuerMode'ORG_URL -> "ORG_URL"
   E'IssuerMode'CUSTOM_URL -> "CUSTOM_URL"
+  E'IssuerMode'DYNAMIC -> "DYNAMIC"
 
 -- | parse 'E'IssuerMode' enum
 toE'IssuerMode :: Text -> P.Either String E'IssuerMode
 toE'IssuerMode = \case
   "ORG_URL" -> P.Right E'IssuerMode'ORG_URL
   "CUSTOM_URL" -> P.Right E'IssuerMode'CUSTOM_URL
+  "DYNAMIC" -> P.Right E'IssuerMode'DYNAMIC
   s -> P.Left $ "toE'IssuerMode: enum parse failure: " P.++ P.show s
 
 
@@ -17041,6 +17639,7 @@ data FactorType
   | FactorType'Hotp -- ^ @"hotp"@
   | FactorType'Push -- ^ @"push"@
   | FactorType'Question -- ^ @"question"@
+  | FactorType'Signed_nonce -- ^ @"signed_nonce"@
   | FactorType'Sms -- ^ @"sms"@
   | FactorType'Tokenhardware -- ^ @"token:hardware"@
   | FactorType'Tokenhotp -- ^ @"token:hotp"@
@@ -17065,6 +17664,7 @@ fromFactorType = \case
   FactorType'Hotp -> "hotp"
   FactorType'Push -> "push"
   FactorType'Question -> "question"
+  FactorType'Signed_nonce -> "signed_nonce"
   FactorType'Sms -> "sms"
   FactorType'Tokenhardware -> "token:hardware"
   FactorType'Tokenhotp -> "token:hotp"
@@ -17082,6 +17682,7 @@ toFactorType = \case
   "hotp" -> P.Right FactorType'Hotp
   "push" -> P.Right FactorType'Push
   "question" -> P.Right FactorType'Question
+  "signed_nonce" -> P.Right FactorType'Signed_nonce
   "sms" -> P.Right FactorType'Sms
   "token:hardware" -> P.Right FactorType'Tokenhardware
   "token:hotp" -> P.Right FactorType'Tokenhotp
@@ -17545,6 +18146,129 @@ toLogSeverity = \case
   s -> P.Left $ "toLogSeverity: enum parse failure: " P.++ P.show s
 
 
+-- ** MultifactorEnrollmentPolicyAuthenticatorStatus
+
+-- | Enum of 'Text'
+data MultifactorEnrollmentPolicyAuthenticatorStatus
+  = MultifactorEnrollmentPolicyAuthenticatorStatus'NOT_ALLOWED -- ^ @"NOT_ALLOWED"@
+  | MultifactorEnrollmentPolicyAuthenticatorStatus'OPTIONAL -- ^ @"OPTIONAL"@
+  | MultifactorEnrollmentPolicyAuthenticatorStatus'REQUIRED -- ^ @"REQUIRED"@
+  deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
+
+instance A.ToJSON MultifactorEnrollmentPolicyAuthenticatorStatus where toJSON = A.toJSON . fromMultifactorEnrollmentPolicyAuthenticatorStatus
+instance A.FromJSON MultifactorEnrollmentPolicyAuthenticatorStatus where parseJSON o = P.either P.fail (pure . P.id) . toMultifactorEnrollmentPolicyAuthenticatorStatus =<< A.parseJSON o
+instance WH.ToHttpApiData MultifactorEnrollmentPolicyAuthenticatorStatus where toQueryParam = WH.toQueryParam . fromMultifactorEnrollmentPolicyAuthenticatorStatus
+instance WH.FromHttpApiData MultifactorEnrollmentPolicyAuthenticatorStatus where parseQueryParam o = WH.parseQueryParam o >>= P.left T.pack . toMultifactorEnrollmentPolicyAuthenticatorStatus
+instance MimeRender MimeMultipartFormData MultifactorEnrollmentPolicyAuthenticatorStatus where mimeRender _ = mimeRenderDefaultMultipartFormData
+
+-- | unwrap 'MultifactorEnrollmentPolicyAuthenticatorStatus' enum
+fromMultifactorEnrollmentPolicyAuthenticatorStatus :: MultifactorEnrollmentPolicyAuthenticatorStatus -> Text
+fromMultifactorEnrollmentPolicyAuthenticatorStatus = \case
+  MultifactorEnrollmentPolicyAuthenticatorStatus'NOT_ALLOWED -> "NOT_ALLOWED"
+  MultifactorEnrollmentPolicyAuthenticatorStatus'OPTIONAL -> "OPTIONAL"
+  MultifactorEnrollmentPolicyAuthenticatorStatus'REQUIRED -> "REQUIRED"
+
+-- | parse 'MultifactorEnrollmentPolicyAuthenticatorStatus' enum
+toMultifactorEnrollmentPolicyAuthenticatorStatus :: Text -> P.Either String MultifactorEnrollmentPolicyAuthenticatorStatus
+toMultifactorEnrollmentPolicyAuthenticatorStatus = \case
+  "NOT_ALLOWED" -> P.Right MultifactorEnrollmentPolicyAuthenticatorStatus'NOT_ALLOWED
+  "OPTIONAL" -> P.Right MultifactorEnrollmentPolicyAuthenticatorStatus'OPTIONAL
+  "REQUIRED" -> P.Right MultifactorEnrollmentPolicyAuthenticatorStatus'REQUIRED
+  s -> P.Left $ "toMultifactorEnrollmentPolicyAuthenticatorStatus: enum parse failure: " P.++ P.show s
+
+
+-- ** MultifactorEnrollmentPolicyAuthenticatorType
+
+-- | Enum of 'Text'
+data MultifactorEnrollmentPolicyAuthenticatorType
+  = MultifactorEnrollmentPolicyAuthenticatorType'Custom_app -- ^ @"custom_app"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Custom_otp -- ^ @"custom_otp"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Duo -- ^ @"duo"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'External_idp -- ^ @"external_idp"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Google_otp -- ^ @"google_otp"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Okta_email -- ^ @"okta_email"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Okta_password -- ^ @"okta_password"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Okta_verify -- ^ @"okta_verify"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Onprem_mfa -- ^ @"onprem_mfa"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Phone_number -- ^ @"phone_number"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Rsa_token -- ^ @"rsa_token"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Security_question -- ^ @"security_question"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Symantec_vip -- ^ @"symantec_vip"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Webauthn -- ^ @"webauthn"@
+  | MultifactorEnrollmentPolicyAuthenticatorType'Yubikey_token -- ^ @"yubikey_token"@
+  deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
+
+instance A.ToJSON MultifactorEnrollmentPolicyAuthenticatorType where toJSON = A.toJSON . fromMultifactorEnrollmentPolicyAuthenticatorType
+instance A.FromJSON MultifactorEnrollmentPolicyAuthenticatorType where parseJSON o = P.either P.fail (pure . P.id) . toMultifactorEnrollmentPolicyAuthenticatorType =<< A.parseJSON o
+instance WH.ToHttpApiData MultifactorEnrollmentPolicyAuthenticatorType where toQueryParam = WH.toQueryParam . fromMultifactorEnrollmentPolicyAuthenticatorType
+instance WH.FromHttpApiData MultifactorEnrollmentPolicyAuthenticatorType where parseQueryParam o = WH.parseQueryParam o >>= P.left T.pack . toMultifactorEnrollmentPolicyAuthenticatorType
+instance MimeRender MimeMultipartFormData MultifactorEnrollmentPolicyAuthenticatorType where mimeRender _ = mimeRenderDefaultMultipartFormData
+
+-- | unwrap 'MultifactorEnrollmentPolicyAuthenticatorType' enum
+fromMultifactorEnrollmentPolicyAuthenticatorType :: MultifactorEnrollmentPolicyAuthenticatorType -> Text
+fromMultifactorEnrollmentPolicyAuthenticatorType = \case
+  MultifactorEnrollmentPolicyAuthenticatorType'Custom_app -> "custom_app"
+  MultifactorEnrollmentPolicyAuthenticatorType'Custom_otp -> "custom_otp"
+  MultifactorEnrollmentPolicyAuthenticatorType'Duo -> "duo"
+  MultifactorEnrollmentPolicyAuthenticatorType'External_idp -> "external_idp"
+  MultifactorEnrollmentPolicyAuthenticatorType'Google_otp -> "google_otp"
+  MultifactorEnrollmentPolicyAuthenticatorType'Okta_email -> "okta_email"
+  MultifactorEnrollmentPolicyAuthenticatorType'Okta_password -> "okta_password"
+  MultifactorEnrollmentPolicyAuthenticatorType'Okta_verify -> "okta_verify"
+  MultifactorEnrollmentPolicyAuthenticatorType'Onprem_mfa -> "onprem_mfa"
+  MultifactorEnrollmentPolicyAuthenticatorType'Phone_number -> "phone_number"
+  MultifactorEnrollmentPolicyAuthenticatorType'Rsa_token -> "rsa_token"
+  MultifactorEnrollmentPolicyAuthenticatorType'Security_question -> "security_question"
+  MultifactorEnrollmentPolicyAuthenticatorType'Symantec_vip -> "symantec_vip"
+  MultifactorEnrollmentPolicyAuthenticatorType'Webauthn -> "webauthn"
+  MultifactorEnrollmentPolicyAuthenticatorType'Yubikey_token -> "yubikey_token"
+
+-- | parse 'MultifactorEnrollmentPolicyAuthenticatorType' enum
+toMultifactorEnrollmentPolicyAuthenticatorType :: Text -> P.Either String MultifactorEnrollmentPolicyAuthenticatorType
+toMultifactorEnrollmentPolicyAuthenticatorType = \case
+  "custom_app" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Custom_app
+  "custom_otp" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Custom_otp
+  "duo" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Duo
+  "external_idp" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'External_idp
+  "google_otp" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Google_otp
+  "okta_email" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Okta_email
+  "okta_password" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Okta_password
+  "okta_verify" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Okta_verify
+  "onprem_mfa" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Onprem_mfa
+  "phone_number" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Phone_number
+  "rsa_token" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Rsa_token
+  "security_question" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Security_question
+  "symantec_vip" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Symantec_vip
+  "webauthn" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Webauthn
+  "yubikey_token" -> P.Right MultifactorEnrollmentPolicyAuthenticatorType'Yubikey_token
+  s -> P.Left $ "toMultifactorEnrollmentPolicyAuthenticatorType: enum parse failure: " P.++ P.show s
+
+
+-- ** MultifactorEnrollmentPolicySettingsType
+
+-- | Enum of 'Text'
+data MultifactorEnrollmentPolicySettingsType
+  = MultifactorEnrollmentPolicySettingsType'AUTHENTICATORS -- ^ @"AUTHENTICATORS"@
+  deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
+
+instance A.ToJSON MultifactorEnrollmentPolicySettingsType where toJSON = A.toJSON . fromMultifactorEnrollmentPolicySettingsType
+instance A.FromJSON MultifactorEnrollmentPolicySettingsType where parseJSON o = P.either P.fail (pure . P.id) . toMultifactorEnrollmentPolicySettingsType =<< A.parseJSON o
+instance WH.ToHttpApiData MultifactorEnrollmentPolicySettingsType where toQueryParam = WH.toQueryParam . fromMultifactorEnrollmentPolicySettingsType
+instance WH.FromHttpApiData MultifactorEnrollmentPolicySettingsType where parseQueryParam o = WH.parseQueryParam o >>= P.left T.pack . toMultifactorEnrollmentPolicySettingsType
+instance MimeRender MimeMultipartFormData MultifactorEnrollmentPolicySettingsType where mimeRender _ = mimeRenderDefaultMultipartFormData
+
+-- | unwrap 'MultifactorEnrollmentPolicySettingsType' enum
+fromMultifactorEnrollmentPolicySettingsType :: MultifactorEnrollmentPolicySettingsType -> Text
+fromMultifactorEnrollmentPolicySettingsType = \case
+  MultifactorEnrollmentPolicySettingsType'AUTHENTICATORS -> "AUTHENTICATORS"
+
+-- | parse 'MultifactorEnrollmentPolicySettingsType' enum
+toMultifactorEnrollmentPolicySettingsType :: Text -> P.Either String MultifactorEnrollmentPolicySettingsType
+toMultifactorEnrollmentPolicySettingsType = \case
+  "AUTHENTICATORS" -> P.Right MultifactorEnrollmentPolicySettingsType'AUTHENTICATORS
+  s -> P.Left $ "toMultifactorEnrollmentPolicySettingsType: enum parse failure: " P.++ P.show s
+
+
 -- ** NetworkZoneAddressType
 
 -- | Enum of 'Text'
@@ -17817,6 +18541,10 @@ data OAuthGrantType
   | OAuthGrantType'Password -- ^ @"password"@
   | OAuthGrantType'Refresh_token -- ^ @"refresh_token"@
   | OAuthGrantType'Client_credentials -- ^ @"client_credentials"@
+  | OAuthGrantType'Saml2_bearer -- ^ @"saml2_bearer"@
+  | OAuthGrantType'Device_code -- ^ @"device_code"@
+  | OAuthGrantType'Token_exchange -- ^ @"token_exchange"@
+  | OAuthGrantType'Interaction_code -- ^ @"interaction_code"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
 instance A.ToJSON OAuthGrantType where toJSON = A.toJSON . fromOAuthGrantType
@@ -17833,6 +18561,10 @@ fromOAuthGrantType = \case
   OAuthGrantType'Password -> "password"
   OAuthGrantType'Refresh_token -> "refresh_token"
   OAuthGrantType'Client_credentials -> "client_credentials"
+  OAuthGrantType'Saml2_bearer -> "saml2_bearer"
+  OAuthGrantType'Device_code -> "device_code"
+  OAuthGrantType'Token_exchange -> "token_exchange"
+  OAuthGrantType'Interaction_code -> "interaction_code"
 
 -- | parse 'OAuthGrantType' enum
 toOAuthGrantType :: Text -> P.Either String OAuthGrantType
@@ -17842,6 +18574,10 @@ toOAuthGrantType = \case
   "password" -> P.Right OAuthGrantType'Password
   "refresh_token" -> P.Right OAuthGrantType'Refresh_token
   "client_credentials" -> P.Right OAuthGrantType'Client_credentials
+  "saml2_bearer" -> P.Right OAuthGrantType'Saml2_bearer
+  "device_code" -> P.Right OAuthGrantType'Device_code
+  "token_exchange" -> P.Right OAuthGrantType'Token_exchange
+  "interaction_code" -> P.Right OAuthGrantType'Interaction_code
   s -> P.Left $ "toOAuthGrantType: enum parse failure: " P.++ P.show s
 
 
@@ -17910,6 +18646,7 @@ toOpenIdConnectApplicationConsentMethod = \case
 data OpenIdConnectApplicationIssuerMode
   = OpenIdConnectApplicationIssuerMode'CUSTOM_URL -- ^ @"CUSTOM_URL"@
   | OpenIdConnectApplicationIssuerMode'ORG_URL -- ^ @"ORG_URL"@
+  | OpenIdConnectApplicationIssuerMode'DYNAMIC -- ^ @"DYNAMIC"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
 instance A.ToJSON OpenIdConnectApplicationIssuerMode where toJSON = A.toJSON . fromOpenIdConnectApplicationIssuerMode
@@ -17923,12 +18660,14 @@ fromOpenIdConnectApplicationIssuerMode :: OpenIdConnectApplicationIssuerMode -> 
 fromOpenIdConnectApplicationIssuerMode = \case
   OpenIdConnectApplicationIssuerMode'CUSTOM_URL -> "CUSTOM_URL"
   OpenIdConnectApplicationIssuerMode'ORG_URL -> "ORG_URL"
+  OpenIdConnectApplicationIssuerMode'DYNAMIC -> "DYNAMIC"
 
 -- | parse 'OpenIdConnectApplicationIssuerMode' enum
 toOpenIdConnectApplicationIssuerMode :: Text -> P.Either String OpenIdConnectApplicationIssuerMode
 toOpenIdConnectApplicationIssuerMode = \case
   "CUSTOM_URL" -> P.Right OpenIdConnectApplicationIssuerMode'CUSTOM_URL
   "ORG_URL" -> P.Right OpenIdConnectApplicationIssuerMode'ORG_URL
+  "DYNAMIC" -> P.Right OpenIdConnectApplicationIssuerMode'DYNAMIC
   s -> P.Left $ "toOpenIdConnectApplicationIssuerMode: enum parse failure: " P.++ P.show s
 
 
@@ -18162,6 +18901,7 @@ data PolicyType
   | PolicyType'IDP_DISCOVERY -- ^ @"IDP_DISCOVERY"@
   | PolicyType'PROFILE_ENROLLMENT -- ^ @"PROFILE_ENROLLMENT"@
   | PolicyType'ACCESS_POLICY -- ^ @"ACCESS_POLICY"@
+  | PolicyType'MFA_ENROLL -- ^ @"MFA_ENROLL"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
 instance A.ToJSON PolicyType where toJSON = A.toJSON . fromPolicyType
@@ -18179,6 +18919,7 @@ fromPolicyType = \case
   PolicyType'IDP_DISCOVERY -> "IDP_DISCOVERY"
   PolicyType'PROFILE_ENROLLMENT -> "PROFILE_ENROLLMENT"
   PolicyType'ACCESS_POLICY -> "ACCESS_POLICY"
+  PolicyType'MFA_ENROLL -> "MFA_ENROLL"
 
 -- | parse 'PolicyType' enum
 toPolicyType :: Text -> P.Either String PolicyType
@@ -18189,6 +18930,7 @@ toPolicyType = \case
   "IDP_DISCOVERY" -> P.Right PolicyType'IDP_DISCOVERY
   "PROFILE_ENROLLMENT" -> P.Right PolicyType'PROFILE_ENROLLMENT
   "ACCESS_POLICY" -> P.Right PolicyType'ACCESS_POLICY
+  "MFA_ENROLL" -> P.Right PolicyType'MFA_ENROLL
   s -> P.Left $ "toPolicyType: enum parse failure: " P.++ P.show s
 
 
@@ -18380,6 +19122,7 @@ data RoleType
   | RoleType'API_ACCESS_MANAGEMENT_ADMIN -- ^ @"API_ACCESS_MANAGEMENT_ADMIN"@
   | RoleType'REPORT_ADMIN -- ^ @"REPORT_ADMIN"@
   | RoleType'GROUP_MEMBERSHIP_ADMIN -- ^ @"GROUP_MEMBERSHIP_ADMIN"@
+  | RoleType'CUSTOM -- ^ @"CUSTOM"@
   deriving (P.Show, P.Eq, P.Typeable, P.Ord, P.Bounded, P.Enum)
 
 instance A.ToJSON RoleType where toJSON = A.toJSON . fromRoleType
@@ -18401,6 +19144,7 @@ fromRoleType = \case
   RoleType'API_ACCESS_MANAGEMENT_ADMIN -> "API_ACCESS_MANAGEMENT_ADMIN"
   RoleType'REPORT_ADMIN -> "REPORT_ADMIN"
   RoleType'GROUP_MEMBERSHIP_ADMIN -> "GROUP_MEMBERSHIP_ADMIN"
+  RoleType'CUSTOM -> "CUSTOM"
 
 -- | parse 'RoleType' enum
 toRoleType :: Text -> P.Either String RoleType
@@ -18415,6 +19159,7 @@ toRoleType = \case
   "API_ACCESS_MANAGEMENT_ADMIN" -> P.Right RoleType'API_ACCESS_MANAGEMENT_ADMIN
   "REPORT_ADMIN" -> P.Right RoleType'REPORT_ADMIN
   "GROUP_MEMBERSHIP_ADMIN" -> P.Right RoleType'GROUP_MEMBERSHIP_ADMIN
+  "CUSTOM" -> P.Right RoleType'CUSTOM
   s -> P.Left $ "toRoleType: enum parse failure: " P.++ P.show s
 
 

@@ -873,7 +873,7 @@ instance Produces ListUserSubscriptions MimeJSON
 -- 
 -- List Users
 -- 
--- Lists users in your organization with pagination in most cases.  A subset of users can be returned that match a supported filter expression or search criteria.
+-- Lists users that do not have a status of 'DEPROVISIONED' (by default), up to the maximum (200 for most orgs), with pagination in most cases. A subset of users can be returned that match a supported filter expression or search criteria.
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
@@ -923,7 +923,7 @@ instance Produces ListUsers MimeJSON
 
 -- | @POST \/api\/v1\/users\/{userId}@
 -- 
--- Fetch a user by `id`, `login`, or `login shortname` if the short name is unambiguous.
+-- Update a user's profile or credentials with partial update semantics.
 -- 
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 

@@ -306,6 +306,161 @@ paths:
       summary: Deactivate default Provisioning Connection for application
       tags:
       - Application
+  /api/v1/apps/{appId}/credentials/secrets:
+    get:
+      description: Enumerates the client's collection of secrets
+      operationId: listClientSecretsForApplication
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ClientSecret'
+                type: array
+          description: Success
+      security:
+      - api_token: []
+      summary: List client secrets
+      tags:
+      - Application
+    post:
+      description: Adds a new secret to the client's collection of secrets.
+      operationId: createNewClientSecretForApplication
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientSecretMetadata'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientSecret'
+          description: Created
+      security:
+      - api_token: []
+      summary: Add new client secret
+      tags:
+      - Application
+      x-codegen-request-body-name: metadata
+  /api/v1/apps/{appId}/credentials/secrets/{secretId}:
+    delete:
+      description: Removes a secret from the client's collection of secrets.
+      operationId: deleteClientSecretForApplication
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: secretId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          content: {}
+          description: No Content
+      security:
+      - api_token: []
+      tags:
+      - Application
+    get:
+      description: Gets a specific client secret by secretId
+      operationId: getClientSecretForApplication
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: secretId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientSecret'
+          description: Success
+      security:
+      - api_token: []
+      summary: Get client secret
+      tags:
+      - Application
+  /api/v1/apps/{appId}/credentials/secrets/{secretId}/lifecycle/activate:
+    post:
+      description: Activates a specific client secret by secretId
+      operationId: activateClientSecretForApplication
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: secretId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientSecret'
+          description: Success
+      security:
+      - api_token: []
+      summary: Activate a client secret
+      tags:
+      - Application
+  /api/v1/apps/{appId}/credentials/secrets/{secretId}/lifecycle/deactivate:
+    post:
+      description: Deactivates a specific client secret by secretId
+      operationId: deactivateClientSecretForApplication
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: secretId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientSecret'
+          description: Success
+      security:
+      - api_token: []
+      summary: Deactivate a client secret
+      tags:
+      - Application
   /api/v1/apps/{appId}/credentials/csrs:
     get:
       description: Enumerates Certificate Signing Requests for an application
@@ -1041,6 +1196,34 @@ paths:
       - api_token: []
       tags:
       - Application
+  /api/v1/apps/{appId}/sso/saml/metadata:
+    get:
+      description: Previews SAML metadata based on a specific key credential for an
+        application
+      operationId: previewSAMLAppMetadata
+      parameters:
+      - in: path
+        name: appId
+        required: true
+        schema:
+          type: string
+      - description: unique key identifier of an Application Key Credential
+        in: query
+        name: kid
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/previewSAMLAppMetadata_200_response'
+          description: Success
+      security:
+      - api_token: []
+      tags:
+      - Application
   /api/v1/apps/{appId}/tokens/{tokenId}:
     delete:
       description: Revokes the specified token for the specified application
@@ -1273,7 +1456,7 @@ paths:
       x-codegen-request-body-name: appUser
   /api/v1/authenticators:
     get:
-      description: Success
+      description: List Authenticators
       operationId: listAuthenticators
       responses:
         "200":
@@ -1286,8 +1469,36 @@ paths:
           description: Success
       security:
       - api_token: []
+      summary: Lists all available Authenticators
       tags:
       - Authenticator
+    post:
+      description: Create Authenticator
+      operationId: createAuthenticator
+      parameters:
+      - in: query
+        name: activate
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Authenticator'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authenticator'
+          description: Success
+      security:
+      - api_token: []
+      summary: Create an Authenticator
+      tags:
+      - Authenticator
+      x-codegen-request-body-name: authenticator
   /api/v1/authenticators/{authenticatorId}:
     get:
       description: Success
@@ -2055,12 +2266,12 @@ paths:
       operationId: listAuthorizationServerPolicyRules
       parameters:
       - in: path
-        name: policyId
+        name: authServerId
         required: true
         schema:
           type: string
       - in: path
-        name: authServerId
+        name: policyId
         required: true
         schema:
           type: string
@@ -2083,12 +2294,12 @@ paths:
       operationId: createAuthorizationServerPolicyRule
       parameters:
       - in: path
-        name: policyId
+        name: authServerId
         required: true
         schema:
           type: string
       - in: path
-        name: authServerId
+        name: policyId
         required: true
         schema:
           type: string
@@ -2117,12 +2328,12 @@ paths:
       operationId: deleteAuthorizationServerPolicyRule
       parameters:
       - in: path
-        name: policyId
+        name: authServerId
         required: true
         schema:
           type: string
       - in: path
-        name: authServerId
+        name: policyId
         required: true
         schema:
           type: string
@@ -2145,12 +2356,12 @@ paths:
       operationId: getAuthorizationServerPolicyRule
       parameters:
       - in: path
-        name: policyId
+        name: authServerId
         required: true
         schema:
           type: string
       - in: path
-        name: authServerId
+        name: policyId
         required: true
         schema:
           type: string
@@ -2176,12 +2387,12 @@ paths:
       operationId: updateAuthorizationServerPolicyRule
       parameters:
       - in: path
-        name: policyId
+        name: authServerId
         required: true
         schema:
           type: string
       - in: path
-        name: authServerId
+        name: policyId
         required: true
         schema:
           type: string
@@ -6044,9 +6255,10 @@ paths:
       - TrustedOrigin
   /api/v1/users:
     get:
-      description: Lists users in your organization with pagination in most cases.  A
-        subset of users can be returned that match a supported filter expression or
-        search criteria.
+      description: "Lists users that do not have a status of 'DEPROVISIONED' (by default),\
+        \ up to the maximum (200 for most orgs), with pagination in most cases. A\
+        \ subset of users can be returned that match a supported filter expression\
+        \ or search criteria."
       operationId: listUsers
       parameters:
       - description: "Finds a user that matches firstName, lastName, and email properties"
@@ -6220,8 +6432,7 @@ paths:
       tags:
       - User
     post:
-      description: "Fetch a user by `id`, `login`, or `login shortname` if the short\
-        \ name is unambiguous."
+      description: Update a user's profile or credentials with partial update semantics.
       operationId: partialUpdateUser
       parameters:
       - in: path
@@ -9436,7 +9647,14 @@ components:
     Application:
       example:
         settings:
-          app: "{}"
+          app:
+            acsUrl: acsUrl
+            usernameField: usernameField
+            loginUrlRegex: loginUrlRegex
+            orgName: orgName
+            buttonField: buttonField
+            passwordField: passwordField
+            url: url
           notes:
             enduser: enduser
             admin: admin
@@ -9793,6 +10011,8 @@ components:
           type: string
         client_secret:
           type: string
+        pkce_required:
+          type: boolean
         token_endpoint_auth_method:
           $ref: '#/components/schemas/OAuthEndpointAuthenticationMethod'
       type: object
@@ -9917,7 +10137,14 @@ components:
       - Application
     ApplicationSettings:
       example:
-        app: "{}"
+        app:
+          acsUrl: acsUrl
+          usernameField: usernameField
+          loginUrlRegex: loginUrlRegex
+          orgName: orgName
+          buttonField: buttonField
+          passwordField: passwordField
+          url: url
         notes:
           enduser: enduser
           admin: admin
@@ -9937,9 +10164,7 @@ components:
               - exclude
       properties:
         app:
-          type: object
-          x-okta-tags:
-          - Application
+          $ref: '#/components/schemas/ApplicationSettingsApplication'
         implicitAssignment:
           type: boolean
         inlineHookId:
@@ -9952,6 +10177,29 @@ components:
       x-okta-tags:
       - Application
     ApplicationSettingsApplication:
+      example:
+        acsUrl: acsUrl
+        usernameField: usernameField
+        loginUrlRegex: loginUrlRegex
+        orgName: orgName
+        buttonField: buttonField
+        passwordField: passwordField
+        url: url
+      properties:
+        orgName:
+          type: string
+        url:
+          type: string
+        acsUrl:
+          type: string
+        buttonField:
+          type: string
+        passwordField:
+          type: string
+        usernameField:
+          type: string
+        loginUrlRegex:
+          type: string
       type: object
       x-okta-tags:
       - Application
@@ -10353,6 +10601,7 @@ components:
     AuthorizationServer:
       example:
         lastUpdated: 2000-01-23T04:56:07.000+00:00
+        default: true
         _links:
           key: "{}"
         credentials:
@@ -10389,6 +10638,9 @@ components:
           type: string
         credentials:
           $ref: '#/components/schemas/AuthorizationServerCredentials'
+        default:
+          readOnly: true
+          type: boolean
         description:
           type: string
         id:
@@ -10400,6 +10652,7 @@ components:
           enum:
           - ORG_URL
           - CUSTOM_URL
+          - DYNAMIC
           type: string
         lastUpdated:
           format: date-time
@@ -10812,6 +11065,54 @@ components:
           type: string
         kty:
           readOnly: true
+          type: string
+      type: object
+      x-okta-tags:
+      - Application
+    ClientSecret:
+      example:
+        lastUpdated: 2000-01-23T04:56:07.000+00:00
+        _links:
+          key: "{}"
+        created: 2000-01-23T04:56:07.000+00:00
+        secret_hash: secret_hash
+        id: id
+        client_secret: client_secret
+        status: ACTIVE
+      properties:
+        id:
+          type: string
+        client_secret:
+          type: string
+        secret_hash:
+          type: string
+        created:
+          format: date-time
+          readOnly: true
+          type: string
+        lastUpdated:
+          format: date-time
+          readOnly: true
+          type: string
+        status:
+          enum:
+          - ACTIVE
+          - INACTIVE
+          type: string
+        _links:
+          additionalProperties:
+            properties: {}
+            type: object
+          readOnly: true
+          type: object
+      type: object
+      x-okta-tags:
+      - Application
+    ClientSecretMetadata:
+      example:
+        client_secret: client_secret
+      properties:
+        client_secret:
           type: string
       type: object
       x-okta-tags:
@@ -11253,6 +11554,7 @@ components:
     DomainCertificateSourceType:
       enum:
       - MANUAL
+      - OKTA_MANAGED
       type: string
       x-okta-tags:
       - Domain
@@ -11267,6 +11569,8 @@ components:
       - NOT_STARTED
       - IN_PROGRESS
       - VERIFIED
+      - FAILED_TO_VERIFY
+      - DOMAIN_TAKEN
       - COMPLETED
       type: string
       x-okta-tags:
@@ -11564,6 +11868,7 @@ components:
       - hotp
       - push
       - question
+      - signed_nonce
       - sms
       - token:hardware
       - token:hotp
@@ -12921,6 +13226,7 @@ components:
           enum:
           - ORG_URL
           - CUSTOM_URL
+          - DYNAMIC
           type: string
         lastUpdated:
           format: date-time
@@ -13787,6 +14093,8 @@ components:
           items:
             $ref: '#/components/schemas/AccessPolicyConstraints'
           type: array
+        inactivityPeriod:
+          type: string
       type: object
       x-okta-tags:
       - Policy
@@ -13906,6 +14214,76 @@ components:
           type: array
         unknownUserAction:
           type: string
+        uiSchemaId:
+          type: string
+      type: object
+      x-okta-tags:
+      - Policy
+    MultifactorEnrollmentPolicy:
+      allOf:
+      - $ref: '#/components/schemas/Policy'
+      - properties:
+          conditions:
+            $ref: '#/components/schemas/PolicyRuleConditions'
+          settings:
+            $ref: '#/components/schemas/MultifactorEnrollmentPolicySettings'
+        type: object
+      x-okta-parent: '#/definitions/Policy'
+      x-okta-tags:
+      - Policy
+    MultifactorEnrollmentPolicySettings:
+      properties:
+        authenticators:
+          items:
+            $ref: '#/components/schemas/MultifactorEnrollmentPolicyAuthenticatorSettings'
+          type: array
+        type:
+          $ref: '#/components/schemas/MultifactorEnrollmentPolicySettingsType'
+      type: object
+      x-okta-tags:
+      - Policy
+    MultifactorEnrollmentPolicySettingsType:
+      enum:
+      - AUTHENTICATORS
+      type: string
+      x-okta-tags:
+      - Policy
+    MultifactorEnrollmentPolicyAuthenticatorStatus:
+      enum:
+      - NOT_ALLOWED
+      - OPTIONAL
+      - REQUIRED
+      type: string
+      x-okta-tags:
+      - Policy
+    MultifactorEnrollmentPolicyAuthenticatorType:
+      enum:
+      - custom_app
+      - custom_otp
+      - duo
+      - external_idp
+      - google_otp
+      - okta_email
+      - okta_password
+      - okta_verify
+      - onprem_mfa
+      - phone_number
+      - rsa_token
+      - security_question
+      - symantec_vip
+      - webauthn
+      - yubikey_token
+      type: string
+      x-okta-tags:
+      - Policy
+    MultifactorEnrollmentPolicyAuthenticatorSettings:
+      properties:
+        constraints:
+          $ref: '#/components/schemas/MultifactorEnrollmentPolicyAuthenticatorSettings_constraints'
+        enroll:
+          $ref: '#/components/schemas/MultifactorEnrollmentPolicyAuthenticatorSettings_enroll'
+        key:
+          $ref: '#/components/schemas/MultifactorEnrollmentPolicyAuthenticatorType'
       type: object
       x-okta-tags:
       - Policy
@@ -21895,6 +22273,10 @@ components:
       - password
       - refresh_token
       - client_credentials
+      - saml2_bearer
+      - device_code
+      - token_exchange
+      - interaction_code
       type: string
       x-okta-tags:
       - Application
@@ -22031,6 +22413,7 @@ components:
       enum:
       - CUSTOM_URL
       - ORG_URL
+      - DYNAMIC
       type: string
       x-okta-tags:
       - Application
@@ -22896,6 +23279,7 @@ components:
           PASSWORD: '#/definitions/PasswordPolicy'
           PROFILE_ENROLLMENT: '#/definitions/ProfileEnrollmentPolicy'
           ACCESS_POLICY: '#/definitions/AccessPolicy'
+          MFA_ENROLL: '#/definitions/MultifactorEnrollmentPolicy'
         propertyName: type
     PolicyAccountLink:
       example:
@@ -23594,6 +23978,7 @@ components:
       - IDP_DISCOVERY
       - PROFILE_ENROLLMENT
       - ACCESS_POLICY
+      - MFA_ENROLL
       type: string
       x-okta-tags:
       - Policy
@@ -24282,6 +24667,7 @@ components:
       - API_ACCESS_MANAGEMENT_ADMIN
       - REPORT_ADMIN
       - GROUP_MEMBERSHIP_ADMIN
+      - CUSTOM
       type: string
       x-okta-tags:
       - Role
@@ -24348,6 +24734,8 @@ components:
         requestCompressed:
           type: boolean
         responseSigned:
+          type: boolean
+        samlSignedRequestEnabled:
           type: boolean
         signatureAlgorithm:
           type: string
@@ -26495,6 +26883,87 @@ components:
           type: string
       required:
       - file
+      type: object
+    previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_KeyDescriptor_KeyInfo_X509Data:
+      properties:
+        X509Certificate:
+          type: string
+      type: object
+    previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_KeyDescriptor_KeyInfo:
+      properties:
+        X509Data:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_KeyDescriptor_KeyInfo_X509Data'
+      type: object
+    previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_KeyDescriptor:
+      properties:
+        use:
+          type: string
+          xml:
+            attribute: true
+        KeyInfo:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_KeyDescriptor_KeyInfo'
+      type: object
+    previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_SingleSignOnService:
+      properties:
+        Binding:
+          type: string
+          xml:
+            attribute: true
+        Location:
+          type: string
+          xml:
+            attribute: true
+      type: object
+    previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor:
+      properties:
+        WantAuthnRequestsSigned:
+          type: boolean
+          xml:
+            attribute: true
+        protocolSupportEnumeration:
+          type: string
+          xml:
+            attribute: true
+        KeyDescriptor:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_KeyDescriptor'
+        NameIDFormat:
+          items:
+            type: string
+          type: array
+        SingleSignOnService:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_SingleSignOnService'
+        SingleLogoutService:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor_SingleSignOnService'
+      type: object
+    previewSAMLAppMetadata_200_response_EntityDescriptor:
+      properties:
+        entityID:
+          type: string
+          xml:
+            attribute: true
+        IDPSSODescriptor:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor_IDPSSODescriptor'
+      type: object
+    previewSAMLAppMetadata_200_response:
+      properties:
+        EntityDescriptor:
+          $ref: '#/components/schemas/previewSAMLAppMetadata_200_response_EntityDescriptor'
+      type: object
+    MultifactorEnrollmentPolicyAuthenticatorSettings_constraints:
+      properties:
+        aaguidGroups:
+          items:
+            type: string
+          type: array
+      type: object
+      x-okta-lifecycle:
+        features:
+        - WEBAUTHN_MDS_CATALOG_BASED_AAGUID_ALLOWLIST
+    MultifactorEnrollmentPolicyAuthenticatorSettings_enroll:
+      properties:
+        self:
+          $ref: '#/components/schemas/MultifactorEnrollmentPolicyAuthenticatorStatus'
+      type: object
   securitySchemes:
     api_token:
       description: "SSWS {API Token}"

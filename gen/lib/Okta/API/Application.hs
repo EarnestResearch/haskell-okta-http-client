@@ -79,6 +79,29 @@ data ActivateApplication
 instance Produces ActivateApplication MimeNoContent
 
 
+-- *** activateClientSecretForApplication
+
+-- | @POST \/api\/v1\/apps\/{appId}\/credentials\/secrets\/{secretId}\/lifecycle\/activate@
+-- 
+-- Activate a client secret
+-- 
+-- Activates a specific client secret by secretId
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+activateClientSecretForApplication
+  :: AppId -- ^ "appId"
+  -> SecretId -- ^ "secretId"
+  -> OktaRequest ActivateClientSecretForApplication MimeNoContent ClientSecret MimeJSON
+activateClientSecretForApplication (AppId appId) (SecretId secretId) =
+  _mkRequest "POST" ["/api/v1/apps/",toPath appId,"/credentials/secrets/",toPath secretId,"/lifecycle/activate"]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+
+data ActivateClientSecretForApplication  
+-- | @application/json@
+instance Produces ActivateClientSecretForApplication MimeJSON
+
+
 -- *** activateDefaultProvisioningConnectionForApplication
 
 -- | @POST \/api\/v1\/apps\/{appId}\/connections\/default\/lifecycle\/activate@
@@ -240,6 +263,36 @@ instance Consumes CreateApplicationGroupAssignment MimeJSON
 instance Produces CreateApplicationGroupAssignment MimeJSON
 
 
+-- *** createNewClientSecretForApplication
+
+-- | @POST \/api\/v1\/apps\/{appId}\/credentials\/secrets@
+-- 
+-- Add new client secret
+-- 
+-- Adds a new secret to the client's collection of secrets.
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+createNewClientSecretForApplication
+  :: (Consumes CreateNewClientSecretForApplication MimeJSON, MimeRender MimeJSON ClientSecretMetadata)
+  => ClientSecretMetadata -- ^ "metadata"
+  -> AppId -- ^ "appId"
+  -> OktaRequest CreateNewClientSecretForApplication MimeJSON ClientSecret MimeJSON
+createNewClientSecretForApplication metadata (AppId appId) =
+  _mkRequest "POST" ["/api/v1/apps/",toPath appId,"/credentials/secrets"]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+    `setBodyParam` metadata
+
+data CreateNewClientSecretForApplication 
+instance HasBodyParam CreateNewClientSecretForApplication ClientSecretMetadata 
+
+-- | @application/json@
+instance Consumes CreateNewClientSecretForApplication MimeJSON
+
+-- | @application/json@
+instance Produces CreateNewClientSecretForApplication MimeJSON
+
+
 -- *** deactivateApplication
 
 -- | @POST \/api\/v1\/apps\/{appId}\/lifecycle\/deactivate@
@@ -259,6 +312,29 @@ deactivateApplication (AppId appId) =
 
 data DeactivateApplication  
 instance Produces DeactivateApplication MimeNoContent
+
+
+-- *** deactivateClientSecretForApplication
+
+-- | @POST \/api\/v1\/apps\/{appId}\/credentials\/secrets\/{secretId}\/lifecycle\/deactivate@
+-- 
+-- Deactivate a client secret
+-- 
+-- Deactivates a specific client secret by secretId
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+deactivateClientSecretForApplication
+  :: AppId -- ^ "appId"
+  -> SecretId -- ^ "secretId"
+  -> OktaRequest DeactivateClientSecretForApplication MimeNoContent ClientSecret MimeJSON
+deactivateClientSecretForApplication (AppId appId) (SecretId secretId) =
+  _mkRequest "POST" ["/api/v1/apps/",toPath appId,"/credentials/secrets/",toPath secretId,"/lifecycle/deactivate"]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+
+data DeactivateClientSecretForApplication  
+-- | @application/json@
+instance Produces DeactivateClientSecretForApplication MimeJSON
 
 
 -- *** deactivateDefaultProvisioningConnectionForApplication
@@ -348,6 +424,26 @@ instance HasOptionalParam DeleteApplicationUser SendEmail where
   applyOptionalParam req (SendEmail xs) =
     req `addQuery` toQuery ("sendEmail", Just xs)
 instance Produces DeleteApplicationUser MimeNoContent
+
+
+-- *** deleteClientSecretForApplication
+
+-- | @DELETE \/api\/v1\/apps\/{appId}\/credentials\/secrets\/{secretId}@
+-- 
+-- Removes a secret from the client's collection of secrets.
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+deleteClientSecretForApplication
+  :: AppId -- ^ "appId"
+  -> SecretId -- ^ "secretId"
+  -> OktaRequest DeleteClientSecretForApplication MimeNoContent NoContent MimeNoContent
+deleteClientSecretForApplication (AppId appId) (SecretId secretId) =
+  _mkRequest "DELETE" ["/api/v1/apps/",toPath appId,"/credentials/secrets/",toPath secretId]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+
+data DeleteClientSecretForApplication  
+instance Produces DeleteClientSecretForApplication MimeNoContent
 
 
 -- *** generateApplicationKey
@@ -501,6 +597,29 @@ instance HasOptionalParam GetApplicationUser Expand where
     req `addQuery` toQuery ("expand", Just xs)
 -- | @application/json@
 instance Produces GetApplicationUser MimeJSON
+
+
+-- *** getClientSecretForApplication
+
+-- | @GET \/api\/v1\/apps\/{appId}\/credentials\/secrets\/{secretId}@
+-- 
+-- Get client secret
+-- 
+-- Gets a specific client secret by secretId
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+getClientSecretForApplication
+  :: AppId -- ^ "appId"
+  -> SecretId -- ^ "secretId"
+  -> OktaRequest GetClientSecretForApplication MimeNoContent ClientSecret MimeJSON
+getClientSecretForApplication (AppId appId) (SecretId secretId) =
+  _mkRequest "GET" ["/api/v1/apps/",toPath appId,"/credentials/secrets/",toPath secretId]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+
+data GetClientSecretForApplication  
+-- | @application/json@
+instance Produces GetClientSecretForApplication MimeJSON
 
 
 -- *** getCsrForApplication
@@ -794,6 +913,28 @@ instance HasOptionalParam ListApplications IncludeNonDeleted where
 instance Produces ListApplications MimeJSON
 
 
+-- *** listClientSecretsForApplication
+
+-- | @GET \/api\/v1\/apps\/{appId}\/credentials\/secrets@
+-- 
+-- List client secrets
+-- 
+-- Enumerates the client's collection of secrets
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+listClientSecretsForApplication
+  :: AppId -- ^ "appId"
+  -> OktaRequest ListClientSecretsForApplication MimeNoContent [ClientSecret] MimeJSON
+listClientSecretsForApplication (AppId appId) =
+  _mkRequest "GET" ["/api/v1/apps/",toPath appId,"/credentials/secrets"]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+
+data ListClientSecretsForApplication  
+-- | @application/json@
+instance Produces ListClientSecretsForApplication MimeJSON
+
+
 -- *** listCsrsForApplication
 
 -- | @GET \/api\/v1\/apps\/{appId}\/credentials\/csrs@
@@ -888,6 +1029,28 @@ instance HasOptionalParam ListScopeConsentGrants Expand where
     req `addQuery` toQuery ("expand", Just xs)
 -- | @application/json@
 instance Produces ListScopeConsentGrants MimeJSON
+
+
+-- *** previewSAMLAppMetadata
+
+-- | @GET \/api\/v1\/apps\/{appId}\/sso\/saml\/metadata@
+-- 
+-- Previews SAML metadata based on a specific key credential for an application
+-- 
+-- AuthMethod: 'AuthApiKeyApiToken'
+-- 
+previewSAMLAppMetadata
+  :: AppId -- ^ "appId"
+  -> Kid -- ^ "kid" -  unique key identifier of an Application Key Credential
+  -> OktaRequest PreviewSAMLAppMetadata MimeNoContent PreviewSAMLAppMetadata200Response MimeXML
+previewSAMLAppMetadata (AppId appId) (Kid kid) =
+  _mkRequest "GET" ["/api/v1/apps/",toPath appId,"/sso/saml/metadata"]
+    `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
+    `addQuery` toQuery ("kid", Just kid)
+
+data PreviewSAMLAppMetadata  
+-- | @application/xml@
+instance Produces PreviewSAMLAppMetadata MimeXML
 
 
 -- *** revokeCsrFromApplication

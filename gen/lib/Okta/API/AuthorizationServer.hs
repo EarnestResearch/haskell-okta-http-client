@@ -184,10 +184,10 @@ instance Produces CreateAuthorizationServerPolicy MimeJSON
 createAuthorizationServerPolicyRule
   :: (Consumes CreateAuthorizationServerPolicyRule MimeJSON, MimeRender MimeJSON AuthorizationServerPolicyRule)
   => AuthorizationServerPolicyRule -- ^ "policyRule"
-  -> PolicyId -- ^ "policyId"
   -> AuthServerId -- ^ "authServerId"
+  -> PolicyId -- ^ "policyId"
   -> OktaRequest CreateAuthorizationServerPolicyRule MimeJSON AuthorizationServerPolicyRule MimeJSON
-createAuthorizationServerPolicyRule policyRule (PolicyId policyId) (AuthServerId authServerId) =
+createAuthorizationServerPolicyRule policyRule (AuthServerId authServerId) (PolicyId policyId) =
   _mkRequest "POST" ["/api/v1/authorizationServers/",toPath authServerId,"/policies/",toPath policyId,"/rules"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
     `setBodyParam` policyRule
@@ -366,11 +366,11 @@ instance Produces DeleteAuthorizationServerPolicy MimeNoContent
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
 deleteAuthorizationServerPolicyRule
-  :: PolicyId -- ^ "policyId"
-  -> AuthServerId -- ^ "authServerId"
+  :: AuthServerId -- ^ "authServerId"
+  -> PolicyId -- ^ "policyId"
   -> RuleId -- ^ "ruleId"
   -> OktaRequest DeleteAuthorizationServerPolicyRule MimeNoContent NoContent MimeNoContent
-deleteAuthorizationServerPolicyRule (PolicyId policyId) (AuthServerId authServerId) (RuleId ruleId) =
+deleteAuthorizationServerPolicyRule (AuthServerId authServerId) (PolicyId policyId) (RuleId ruleId) =
   _mkRequest "DELETE" ["/api/v1/authorizationServers/",toPath authServerId,"/policies/",toPath policyId,"/rules/",toPath ruleId]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
@@ -468,11 +468,11 @@ instance Produces GetAuthorizationServerPolicy MimeJSON
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
 getAuthorizationServerPolicyRule
-  :: PolicyId -- ^ "policyId"
-  -> AuthServerId -- ^ "authServerId"
+  :: AuthServerId -- ^ "authServerId"
+  -> PolicyId -- ^ "policyId"
   -> RuleId -- ^ "ruleId"
   -> OktaRequest GetAuthorizationServerPolicyRule MimeNoContent AuthorizationServerPolicyRule MimeJSON
-getAuthorizationServerPolicyRule (PolicyId policyId) (AuthServerId authServerId) (RuleId ruleId) =
+getAuthorizationServerPolicyRule (AuthServerId authServerId) (PolicyId policyId) (RuleId ruleId) =
   _mkRequest "GET" ["/api/v1/authorizationServers/",toPath authServerId,"/policies/",toPath policyId,"/rules/",toPath ruleId]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
@@ -597,10 +597,10 @@ instance Produces ListAuthorizationServerPolicies MimeJSON
 -- AuthMethod: 'AuthApiKeyApiToken'
 -- 
 listAuthorizationServerPolicyRules
-  :: PolicyId -- ^ "policyId"
-  -> AuthServerId -- ^ "authServerId"
+  :: AuthServerId -- ^ "authServerId"
+  -> PolicyId -- ^ "policyId"
   -> OktaRequest ListAuthorizationServerPolicyRules MimeNoContent [AuthorizationServerPolicyRule] MimeJSON
-listAuthorizationServerPolicyRules (PolicyId policyId) (AuthServerId authServerId) =
+listAuthorizationServerPolicyRules (AuthServerId authServerId) (PolicyId policyId) =
   _mkRequest "GET" ["/api/v1/authorizationServers/",toPath authServerId,"/policies/",toPath policyId,"/rules"]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
 
@@ -876,11 +876,11 @@ instance Produces UpdateAuthorizationServerPolicy MimeJSON
 updateAuthorizationServerPolicyRule
   :: (Consumes UpdateAuthorizationServerPolicyRule MimeJSON, MimeRender MimeJSON AuthorizationServerPolicyRule)
   => AuthorizationServerPolicyRule -- ^ "policyRule"
-  -> PolicyId -- ^ "policyId"
   -> AuthServerId -- ^ "authServerId"
+  -> PolicyId -- ^ "policyId"
   -> RuleId -- ^ "ruleId"
   -> OktaRequest UpdateAuthorizationServerPolicyRule MimeJSON AuthorizationServerPolicyRule MimeJSON
-updateAuthorizationServerPolicyRule policyRule (PolicyId policyId) (AuthServerId authServerId) (RuleId ruleId) =
+updateAuthorizationServerPolicyRule policyRule (AuthServerId authServerId) (PolicyId policyId) (RuleId ruleId) =
   _mkRequest "PUT" ["/api/v1/authorizationServers/",toPath authServerId,"/policies/",toPath policyId,"/rules/",toPath ruleId]
     `_hasAuthType` (P.Proxy :: P.Proxy AuthApiKeyApiToken)
     `setBodyParam` policyRule
